@@ -1,0 +1,11 @@
+{
+  "extends": ["tslint:recommended", "tslint-react"],
+  "rules": {
+    "jsx-boolean-value": [true, "never"],
+    "quotemark": [true, "single", "jsx-double"],
+    "semicolon": [false, "never"],
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "jsx-no-lambda": [false],
+    "no-shadowed-variable": [false]
+  }
+}

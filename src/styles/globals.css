@@ -1,0 +1,95 @@
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .gc-text-shadow {
+    /* text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+    text-shadow: 2px 0 0 #130032, -2px 0 0 #130032, 0 2px 0 #130032, 0 -2px 0 #130032,
+      1px 1px #130032, -1px -1px 0 #130032, 1px -1px 0 #130032, -1px 1px 0 #130032;
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap');
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.135em;
+}
+
+.layout-container,
+.layout-container-full {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 640px) {
+  .layout-container,
+  .layout-container-full {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (min-width: 640px) {
+  .layout-container,
+  .layout-container-full {
+    max-width: 620px;
+  }
+}
+
+@media (min-width: 768px) {
+  .layout-container,
+  .layout-container-full {
+    max-width: 750px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout-container,
+  .layout-container-full {
+    max-width: 1000px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .layout-container,
+  .layout-container-full {
+    max-width: 1200px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .layout-container-full {
+    max-width: 1890px;
+  }
+}
+
+@media screen and (min-width: 3840px) {
+  .layout-container-full {
+    max-width: 3810px;
+  }
+}
+
+/* Custom react-confirm-alert */
+.react-confirm-alert-overlay {
+  background: rgba(132, 128, 128, 0.63);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
