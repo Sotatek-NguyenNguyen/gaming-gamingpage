@@ -150,9 +150,11 @@ export const AuthProvider: React.FC = ({ children }) => {
       } else {
         /* token = await createTokenWithWalletAdapter(adapter._wallet); */
       }
-      setIsAuthenticated(true);
-      setPublicKey(walletAddress.toString());
-      setAccessToken(token);
+      if (token) {
+        setIsAuthenticated(true);
+        setPublicKey(walletAddress.toString());
+        setAccessToken(token);
+      }
     } catch (e) {
       setIsAuthenticated(false);
       setPublicKey(null);
