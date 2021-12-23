@@ -12,6 +12,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { signatureMsgAuth, loginAuth } from '../api/auth';
 
+declare global {
+  interface Window {
+    solana?: any;
+  }
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   cluster: Cluster;
