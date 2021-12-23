@@ -9,7 +9,6 @@ import {
   createTokenWithWalletAdapter, */
 } from '@gamify/onchain-program-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
-import Wallet from '@project-serum/sol-wallet-adapter';
 import { signatureMsgAuth, loginAuth } from '../api/auth';
 
 declare global {
@@ -109,6 +108,15 @@ export const AuthProvider: React.FC = ({ children }) => {
     setCluster(newCluster);
   };
 
+  /* const createPayload = (address: PublicKey) => {
+    const now = new Date().getTime();
+    return {
+      address: address.toString(),
+      iat: now,
+      exp: now + 24 * 60 * 60 * 1000,
+    };
+  }; */
+
   const login = async (
     walletAddress: PublicKey,
     signMessage?: (message: Uint8Array) => Promise<Uint8Array>,
@@ -119,36 +127,26 @@ export const AuthProvider: React.FC = ({ children }) => {
       let token;
       if (signMessage) {
         /* token = await createTokenWithSignMessageFunc(signMessage!, walletAddress); */
-        if (wallet && wallet.name === 'Phantom') {
-          const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
-          const encodedMessage = new TextEncoder().encode(signatureMsg?.signatureMsg);
-          const signedMessage = await window.solana.signMessage(encodedMessage, 'utf8');
+        // const payload = createPayload(walletAddress);
 
-          const tokenResponse = await loginAuth({
-            address: walletAddress.toString(),
-            signature: signedMessage.signature,
-          });
-          token = tokenResponse.accessToken;
-        } else {
-          const providerUrl = 'https://www.sollet.io';
-          const wallet = new Wallet(providerUrl, '');
-          wallet.on('connect', (publicKey2) =>
-            console.log('Connected to ' + publicKey2.toBase58()),
-          );
-          wallet.on('disconnect', () => console.log('Disconnected'));
-          await wallet.connect();
-
-          const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
-          const data = new TextEncoder().encode(signatureMsg.signatureMsg);
-          const { signature } = await wallet.sign(data, 'utf8');
-          const tokenResponse = await loginAuth({
-            address: walletAddress.toString(),
-            signature,
-          });
-          token = tokenResponse.accessToken;
-        }
+        const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
+        const encodedMessage = new TextEncoder().encode(signatureMsg?.signatureMsg);
+        const signature = await signMessage(encodedMessage);
+        const tokenResponse = await loginAuth({
+          address: walletAddress.toString(),
+          signature: Buffer.from(signature),
+        });
+        token = tokenResponse.accessToken;
       } else {
         /* token = await createTokenWithWalletAdapter(adapter._wallet); */
+        const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
+        const encodedMessage = new TextEncoder().encode(signatureMsg?.signatureMsg);
+        const { signature } = await adapter._wallet.sign(Buffer.from(encodedMessage), 'object');
+        const tokenResponse = await loginAuth({
+          address: walletAddress.toString(),
+          signature: Buffer.from(signature),
+        });
+        token = tokenResponse.accessToken;
       }
       if (token) {
         setIsAuthenticated(true);
