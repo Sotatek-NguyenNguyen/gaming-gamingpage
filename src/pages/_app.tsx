@@ -4,10 +4,12 @@ import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
 import React, { useEffect } from 'react';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer, Zoom } from 'react-toastify';
+import { GlobalProvider } from '../contexts/global';
+import { AuthProvider } from '../contexts/authContext';
+import 'nprogress/nprogress.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
 
@@ -47,16 +49,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WalletConnectionProvider>
       <WalletModalProvider logo="/icons/apple-touch-icon.png">
-        <Component {...pageProps} />
-        <ToastContainer
-          hideProgressBar
-          position="bottom-left"
-          limit={2}
-          newestOnTop
-          closeButton={false}
-          autoClose={2000}
-          transition={Zoom}
-        />
+        <GlobalProvider>
+          <AuthProvider>
+            <Component {...pageProps} />
+            <ToastContainer
+              hideProgressBar
+              position="bottom-left"
+              limit={2}
+              newestOnTop
+              closeButton={false}
+              autoClose={2000}
+              transition={Zoom}
+            />
+          </AuthProvider>
+        </GlobalProvider>
       </WalletModalProvider>
     </WalletConnectionProvider>
   );

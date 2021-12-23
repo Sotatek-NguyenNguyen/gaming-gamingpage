@@ -2,20 +2,19 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import React, { useCallback, useEffect, useMemo, useState, FC } from 'react';
 import { FaTimes } from 'react-icons/fa';
-import { useAlert } from '../../../../hooks';
-// import { useGlobal } from '../../../../hooks/useGlobal';
-// import useSmartContract from '../../../../hooks/useSmartContract';
+import { useAlert, useAuth, useGlobal, useSmartContract } from '../../../../hooks';
 
 const CurrentAccountBadge: FC = ({ children }) => {
-  const { publicKey, wallet, connected, disconnect } = useWallet();
+  const { publicKey, wallet, connected, disconnect, signMessage, adapter } = useWallet();
   const { visible, setVisible } = useWalletModal();
-  // const { setAccountBalance, balance } = useGlobal();
+  const { login, logout, isAuthenticated } = useAuth();
+  const { setAccountBalance, balance } = useGlobal();
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showErr, setShowErr] = useState(false);
 
   const { alertInfo, alertError } = useAlert();
-  // const { refreshWalletBalance } = useSmartContract();
+  const { refreshWalletBalance } = useSmartContract();
 
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
 
@@ -24,6 +23,11 @@ const CurrentAccountBadge: FC = ({ children }) => {
     if (!wallet || !base58) return null;
     return base58.slice(0, 4) + '..' + base58.slice(-4);
   }, [children, wallet, base58]);
+
+  const onDisconnect = () => {
+    logout();
+    disconnect();
+  };
 
   const copyAddress = useCallback(async () => {
     if (base58) {
@@ -42,21 +46,24 @@ const CurrentAccountBadge: FC = ({ children }) => {
     const initBalance = async () => {
       try {
         setLoading(true);
-        // await refreshWalletBalance();
+        if (!isAuthenticated) {
+          await login(publicKey, signMessage, adapter, wallet);
+        }
+        await refreshWalletBalance();
         setLoading(false);
       } catch (err) {
         setLoading(false);
-        // setAccountBalance(null);
+        setAccountBalance(null);
       }
     };
 
     if (connected) {
       initBalance();
     } else {
-      // setAccountBalance(null);
+      setAccountBalance(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected]);
+  }, [connected, isAuthenticated]);
 
   useEffect(() => {
     if (copied) {
@@ -110,7 +117,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
   return (
     <div className="flex items-center justify-between w-64 h-12 overflow-hidden text-sm rounded-full shadow-md bg-primary-400 border border-primary-200">
       <button
-        onClick={disconnect}
+        onClick={onDisconnect}
         className="flex items-center justify-center p-2 mx-2 bg-black rounded-full"
       >
         <FaTimes className="z-20 text-white" />
@@ -120,8 +127,8 @@ const CurrentAccountBadge: FC = ({ children }) => {
         {loading ? (
           <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
         ) : (
-          <span className="ml-auto text-sm font-semibold text-white">
-            {/* {balance?.formatted} */} SOL
+          <span className="ml-auto text-sm tracking-normal text-white">
+            {balance?.formatted} SOL
           </span>
         )}
         <div

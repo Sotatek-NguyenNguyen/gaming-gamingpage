@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@gamify/onchain-program-sdk": "^0.0.6",
+    "@project-serum/sol-wallet-adapter": "^0.2.6",
     "@solana/spl-token-registry": "^0.2.172",
     "@solana/wallet-adapter-base": "^0.7.0",
     "@solana/wallet-adapter-react": "^0.13.1",

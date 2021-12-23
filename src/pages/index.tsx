@@ -1,20 +1,14 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
 import Layout from '../components/shared/Layout';
 import { PageTitle } from '../shared/enum';
 import LoadingScreen from '../components/shared/LoadingScreen';
 import Banner from '../components/shared/Banner';
 import FavoriteDescription from '../components/home/FavoriteDescription';
+import { useGetGame } from '../hooks';
 
 const Home: NextPage = () => {
-  const [loading, setLoading] = useState(false);
-
-  /* useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 4000);
-  }, []); */
+  const { loading, gameData } = useGetGame();
+  // console.log(gameData);
 
   return (
     <Layout title={PageTitle.HomePage}>
