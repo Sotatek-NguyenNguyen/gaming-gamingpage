@@ -122,7 +122,6 @@ const CurrentAccountBadge: FC = ({ children }) => {
       >
         <FaTimes className="z-20 text-white" />
       </button>
-
       <div className="flex items-center justify-between w-full">
         {loading ? (
           <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
