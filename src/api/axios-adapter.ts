@@ -7,7 +7,7 @@ const instance = axios.create({ baseURL: API_URL_BACKEND });
 instance.interceptors.request.use((config: any) => {
   const accessToken = localStorage.getItem('access_token');
   if (accessToken && JSON.parse(accessToken)) {
-    config.headers['access-token'] = `${JSON.parse(accessToken)}`;
+    config.headers.authorization = `Bearer ${JSON.parse(accessToken)}`;
   }
 
   return config;
