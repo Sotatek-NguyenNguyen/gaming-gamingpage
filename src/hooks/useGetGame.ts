@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getGameInfo, GameInfoResponse } from '../api/game';
+import { getGameInfo } from '../api/game';
+import { GameInfoResponse } from '../utils/interface';
 
 export const useGetGame = () => {
   const [loading, setLoading] = useState(false);
