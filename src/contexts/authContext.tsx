@@ -131,8 +131,10 @@ export const AuthProvider: React.FC = ({ children }) => {
           token = tokenResponse.accessToken;
         } else {
           const providerUrl = 'https://www.sollet.io';
-          const wallet = new Wallet(providerUrl);
-          wallet.on('connect', (publicKey) => console.log('Connected to ' + publicKey.toBase58()));
+          const wallet = new Wallet(providerUrl, '');
+          wallet.on('connect', (publicKey2) =>
+            console.log('Connected to ' + publicKey2.toBase58()),
+          );
           wallet.on('disconnect', () => console.log('Disconnected'));
           await wallet.connect();
 
