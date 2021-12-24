@@ -6,13 +6,13 @@ export const navbarMenu = [
     externalLink: '',
     enable: true,
   },
-  {
+  /* {
     name: 'TOURNAMENTS',
     key: 'tournaments',
     link: '/tournaments',
     externalLink: '',
     enable: true,
-  },
+  }, */
   {
     name: 'My Account',
     key: 'my-account',

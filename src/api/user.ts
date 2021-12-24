@@ -1,5 +1,10 @@
 import axios from './axios-adapter';
-import { UserDetailResponse, UserWithdrawResponse } from '../utils/interface';
+import {
+  UserDetailResponse,
+  UserWithdrawResponse,
+  UserTransactionsResponse,
+  UserInGameBalanceChangeResponse,
+} from '../utils/interface';
 
 export const getUserDetail = (): Promise<UserDetailResponse> => {
   return axios.get('my');
@@ -7,4 +12,16 @@ export const getUserDetail = (): Promise<UserDetailResponse> => {
 
 export const userWithdraw = (params: Record<string, unknown>): Promise<UserWithdrawResponse> => {
   return axios.post('my/withdrawals', params);
+};
+
+export const getCurrentUserTransactionHistory = (
+  params: Record<string, unknown>,
+): Promise<UserTransactionsResponse> => {
+  return axios.get('my/transactions', params);
+};
+
+export const getCurrentUserInGameBalanceChangeHistory = (
+  params: Record<string, unknown>,
+): Promise<UserInGameBalanceChangeResponse> => {
+  return axios.get('my/in-game-balances-changes', params);
 };

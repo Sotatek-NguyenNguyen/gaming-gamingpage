@@ -36,3 +36,38 @@ export interface UserDetailResponse {
 export interface UserWithdrawResponse {
   success: boolean;
 }
+
+export interface UserTransaction {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  userAddress: string;
+  amount: number;
+  transactionId: string;
+  type: string;
+}
+
+export interface UserTransactionsResponse {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPage: number;
+  data: UserTransaction[];
+}
+
+export interface UserInGameBalanceChangeResponse {
+  page: number;
+  pageSize: number;
+  total: number;
+  pageCount: number;
+  data: UserTransaction[];
+}
+
+export interface ITransactionFilter {
+  page: number;
+  pageSize: number;
+  fromDate?: string;
+  toDate?: string;
+  type?: string;
+  transactionId?: string;
+}

@@ -8,13 +8,12 @@ import { useGetGame } from '../hooks';
 
 const Home: NextPage = () => {
   const { loading, gameData } = useGetGame();
-  // console.log(gameData);
 
   return (
     <Layout title={PageTitle.HomePage}>
       <LoadingScreen loading={loading} />
       <Banner />
-      <FavoriteDescription />
+      <FavoriteDescription game={gameData} />
     </Layout>
   );
 };
