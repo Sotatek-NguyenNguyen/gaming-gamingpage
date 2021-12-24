@@ -3,19 +3,14 @@ import { Cluster, PublicKey } from '@solana/web3.js';
 import { useConnection, useLocalStorageState } from '../hooks';
 import { formatNumber, transformLamportsToSOL } from '../shared/helper';
 import {
-  isTokenOwnedByAddress,
+  // isTokenOwnedByAddress,
   verifyAndDecode,
   /* createTokenWithSignMessageFunc,
   createTokenWithWalletAdapter, */
 } from '@gamify/onchain-program-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
+import * as bs58 from 'bs58';
 import { signatureMsgAuth, loginAuth } from '../api/auth';
-
-declare global {
-  interface Window {
-    solana?: any;
-  }
-}
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -44,6 +39,11 @@ const defaultState: AuthState = {
   changeCluster: () => {},
 };
 
+interface IPayloadWithSignature {
+  address: string;
+  signature: string;
+}
+
 const AuthContext = createContext<AuthState>(defaultState);
 
 export const AuthProvider: React.FC = ({ children }) => {
@@ -63,6 +63,20 @@ export const AuthProvider: React.FC = ({ children }) => {
   });
   const { connection } = useConnection();
   const [cluster, setCluster] = useState<Cluster>('devnet');
+
+  const decodeToken = (token: string): IPayloadWithSignature => {
+    return JSON.parse(bs58.decode(token).toString()) as IPayloadWithSignature;
+  };
+
+  const isTokenOwnedByAddress = (token: string, address: PublicKey) => {
+    try {
+      const payloadWithSig = decodeToken(token);
+      return payloadWithSig.address === address.toString();
+    } catch (error) {
+      console.log('isTokenOwnedByAddress: error', error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const getAuthenStatus = () => {
@@ -121,7 +135,6 @@ export const AuthProvider: React.FC = ({ children }) => {
     walletAddress: PublicKey,
     signMessage?: (message: Uint8Array) => Promise<Uint8Array>,
     adapter?: any,
-    wallet?: any,
   ): Promise<void> => {
     try {
       let token;

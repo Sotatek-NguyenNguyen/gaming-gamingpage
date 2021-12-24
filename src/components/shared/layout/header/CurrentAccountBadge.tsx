@@ -47,7 +47,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
       try {
         setLoading(true);
         if (!isAuthenticated) {
-          await login(publicKey, signMessage, adapter, wallet);
+          await login(publicKey, signMessage, adapter);
         }
         await refreshWalletBalance();
         setLoading(false);
