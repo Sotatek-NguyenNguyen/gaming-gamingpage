@@ -38,10 +38,10 @@ const InGameChangeTable: React.FC<Props> = ({
       <table className="w-full text-white table-fixed">
         <thead className={`border-b-2 border-white border-opacity-50`}>
           <tr className="text-lg">
-            <th className="w-1/4 px-5 py-10 md:w-1/4 text-left">Item ID</th>
-            <th className="w-1/4 md:w-1/4 px-4 py-10 md:table-cell text-center">Amount</th>
-            <th className="w-1/4 px-4 py-10 md:w-1/4 text-center">Added on</th>
-            <th className="w-1/4 px-4 py-10 md:w-1/4 text-center">Expires on</th>
+            <th className="w-1/4 px-5 py-4 md:py-10 text-left">Item ID</th>
+            <th className="w-1/4 px-4 py-4 md:py-10 md:table-cell text-center">Amount</th>
+            <th className="w-1/4 px-4 py-4 md:py-10 text-center">Added on</th>
+            <th className="w-1/4 px-4 py-4 md:py-10 text-center">Expires on</th>
           </tr>
         </thead>
         <tbody>
@@ -49,12 +49,12 @@ const InGameChangeTable: React.FC<Props> = ({
             data.length > 0 &&
             data.map(({ id, transactionId, amount, createdAt }) => (
               <tr key={id} className="border-b border-white border-opacity-50 font-normal">
-                <td className="px-5 py-6 w-full truncate">{transactionId}</td>
-                <td className="px-5 py-6 text-center">{amount}</td>
-                <td className="px-5 py-6 text-center">
+                <td className="px-5 py-4 md:py-6 w-full truncate">{transactionId}</td>
+                <td className="px-5 py-4 md:py-6 text-center">{amount}</td>
+                <td className="px-5 py-4 md:py-6 text-center">
                   {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}
                 </td>
-                <td className="px-5 py-6 text-center">
+                <td className="px-5 py-4 md:py-6 text-center">
                   {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
