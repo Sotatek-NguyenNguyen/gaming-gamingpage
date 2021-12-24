@@ -28,7 +28,7 @@ const Paginations: React.FC<Props> = ({
   const listPage = getListPageFromTotalPage(totalPages);
 
   return (
-    <ul className="flex items-center justify-center mt-4 text-white bg-transparent">
+    <ul className="flex items-center justify-center mb-4 text-white bg-transparent">
       {hasPrevious && (
         <li className={`mr-2 text-white bg-transparent cursor-pointer`} onClick={handleGoPrevious}>
           <FaCaretLeft />
@@ -38,10 +38,13 @@ const Paginations: React.FC<Props> = ({
       {listPage.map((p) => (
         <li
           key={`page_${p}`}
-          className={clsx('flex items-center justify-center w-8 h-8 mx-2 text-white', {
-            'border bg-primary-600 border-black border-opacity-25 rounded-md': p === currentPage,
-            'cursor-pointer': p !== currentPage,
-          })}
+          className={clsx(
+            'flex items-center justify-center text-center w-10 h-10 mx-2 text-white',
+            {
+              'border bg-primary-600 border-black border-opacity-25 rounded-md': p === currentPage,
+              'cursor-pointer': p !== currentPage,
+            },
+          )}
           onClick={() => {
             if (p !== currentPage) {
               handleGoToPage(p);

@@ -55,14 +55,6 @@ export interface UserTransactionsResponse {
   data: UserTransaction[];
 }
 
-export interface UserInGameBalanceChangeResponse {
-  page: number;
-  pageSize: number;
-  total: number;
-  pageCount: number;
-  data: UserTransaction[];
-}
-
 export interface ITransactionFilter {
   page: number;
   pageSize: number;

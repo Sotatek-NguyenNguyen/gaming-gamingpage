@@ -3,15 +3,26 @@ import {
   getCurrentUserTransactionHistory,
   getCurrentUserInGameBalanceChangeHistory,
 } from './../api/user';
-import { ITransactionFilter, UserTransactionsResponse } from './../utils/interface';
+import queryString from 'query-string';
+import { UserTransactionsResponse } from './../utils/interface';
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 20;
 
 export const useDataTable = () => {
   const [hasNext, setHasNext] = useState(false);
   const [hasPrevious, setHasPrevious] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currPaginated, setCurrPaginated] = useState<UserTransactionsResponse | null>();
+  const [tabActive, setTabActive] = useState<string>('');
+
+  useEffect(() => {
+    const parsed = queryString.parse(location.search);
+    if (parsed && parsed.section) {
+      setTabActive(parsed.section.toString());
+    } else {
+      setTabActive('');
+    }
+  }, [location.search]);
 
   useEffect(() => {
     if (currPaginated) {
@@ -26,59 +37,28 @@ export const useDataTable = () => {
 
   useEffect(() => {
     const init = async () => {
-      await getDataBySection({ type: '' });
+      await getDataBySection({ page: 1, pageSize: PAGE_SIZE });
     };
     init();
-  }, []);
+  }, [tabActive]);
 
   const movePage = async (page: number): Promise<void> => {
-    setLoading(true);
-
-    try {
-      const serverResponseData = await getCurrentUserTransactionHistory({
-        params: { page, pageSize: PAGE_SIZE },
-      });
-      setCurrPaginated(serverResponseData);
-    } catch (err) {
-      setCurrPaginated(null);
-    } finally {
-      setLoading(false);
-    }
+    getDataBySection({ page, pageSize: PAGE_SIZE });
   };
 
   const nextPage = async (): Promise<void> => {
     if (currPaginated && hasNext) {
-      setLoading(true);
-      try {
-        const serverResponseData = await getCurrentUserTransactionHistory({
-          params: { page: currPaginated.page + 1, pageSize: PAGE_SIZE },
-        });
-        setCurrPaginated(serverResponseData);
-      } catch (err) {
-        setCurrPaginated(null);
-      } finally {
-        setLoading(false);
-      }
+      getDataBySection({ page: currPaginated.page + 1, pageSize: PAGE_SIZE });
     }
   };
 
   const previousPage = async (): Promise<void> => {
     if (currPaginated && hasNext) {
-      setLoading(true);
-      try {
-        const serverResponseData = await getCurrentUserTransactionHistory({
-          params: { page: currPaginated.page - 1, pageSize: PAGE_SIZE },
-        });
-        setCurrPaginated(serverResponseData);
-      } catch (err) {
-        setCurrPaginated(null);
-      } finally {
-        setLoading(false);
-      }
+      getDataBySection({ page: currPaginated.page - 1, pageSize: PAGE_SIZE });
     }
   };
 
-  const getDataBySection = async (params: { type?: string }): Promise<void> => {
+  const getDataBySection = async (params: object): Promise<void> => {
     // const condition: ITransactionFilter | undefined = {};
     /* if (params.section) {
       condition.section = params.section;
@@ -89,9 +69,13 @@ export const useDataTable = () => {
 
     setLoading(true);
     try {
-      const serverResponseData = await getCurrentUserTransactionHistory({
-        params: { page: 1, pageSize: PAGE_SIZE },
-      });
+      const serverResponseData = tabActive
+        ? await getCurrentUserInGameBalanceChangeHistory({
+            params,
+          })
+        : await getCurrentUserTransactionHistory({
+            params,
+          });
 
       setCurrPaginated(serverResponseData);
     } catch (err) {
@@ -101,5 +85,14 @@ export const useDataTable = () => {
     }
   };
 
-  return { hasNext, hasPrevious, loading, currPaginated, movePage, nextPage, previousPage };
+  return {
+    tabActive,
+    hasNext,
+    hasPrevious,
+    loading,
+    currPaginated,
+    movePage,
+    nextPage,
+    previousPage,
+  };
 };

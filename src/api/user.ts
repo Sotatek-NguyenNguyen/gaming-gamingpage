@@ -3,7 +3,6 @@ import {
   UserDetailResponse,
   UserWithdrawResponse,
   UserTransactionsResponse,
-  UserInGameBalanceChangeResponse,
 } from '../utils/interface';
 
 export const getUserDetail = (): Promise<UserDetailResponse> => {
@@ -22,6 +21,6 @@ export const getCurrentUserTransactionHistory = (
 
 export const getCurrentUserInGameBalanceChangeHistory = (
   params: Record<string, unknown>,
-): Promise<UserInGameBalanceChangeResponse> => {
+): Promise<UserTransactionsResponse> => {
   return axios.get('my/in-game-balances-changes', params);
 };
