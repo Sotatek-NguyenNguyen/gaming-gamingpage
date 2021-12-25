@@ -59,6 +59,7 @@ module.exports = {
       },
       width: {
         '32rem': '32rem',
+        '46-6rem': '46.6rem',
       },
       height: {
         '10v': '10vh',
@@ -81,6 +82,8 @@ module.exports = {
           400: '#2B067A',
           500: '#18033e',
           600: '#624E8F',
+          700: '#5523BF',
+          800: '#9F99B3',
           900: '#000000',
         },
         secondary: {

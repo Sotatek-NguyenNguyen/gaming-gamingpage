@@ -15,6 +15,7 @@ interface Props {
   confirmText?: string;
   customBody?: JSX.Element;
   dense?: boolean;
+  modalMW?: string;
 }
 
 const BaseModal: React.FC<Props> = ({
@@ -27,9 +28,12 @@ const BaseModal: React.FC<Props> = ({
   customBody,
   onClose,
   dense,
+  modalMW = 'md:w-32rem',
 }) => {
   return (
-    <div className="relative flex flex-col items-center w-full overflow-hidden rounded-b-lg shadow-lg md:w-32rem">
+    <div
+      className={`relative flex flex-col items-center w-full overflow-hidden rounded-b-lg shadow-lg ${modalMW}`}
+    >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
           <Spinner size="medium" variant="basic" />
