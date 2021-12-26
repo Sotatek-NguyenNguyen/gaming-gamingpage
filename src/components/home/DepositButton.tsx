@@ -1,17 +1,18 @@
 import { FC, useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useAlert } from '../../hooks';
+import { useAlert, useAuth } from '../../hooks';
 import { confirmAlert } from 'react-confirm-alert';
 import DepositModal from '../my-account/DepositModal';
 
 const DepositButton: FC = () => {
   const { alertError } = useAlert();
   const { wallet, publicKey } = useWallet();
+  const { isAuthenticated } = useAuth();
 
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
 
   const handleDeposit = () => {
-    if (!wallet) {
+    if (!wallet || !isAuthenticated) {
       alertError('Please connect to your wallet');
       return;
     }
