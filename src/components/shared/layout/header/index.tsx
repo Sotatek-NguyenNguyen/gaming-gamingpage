@@ -73,10 +73,16 @@ const Header: React.FC = () => {
             {sidebarVisible && (
               <div className="fixed inset-0 z-50 flex flex-col px-4 bg-primary-500">
                 <div className="flex items-center justify-between py-4">
-                  <div>
-                    <Logo />
-                  </div>
-
+                  {gameData?.logoURL && (
+                    <img
+                      width={99}
+                      height={41}
+                      src={gameData.logoURL}
+                      alt="gamify gaming logo"
+                      className="cursor-pointer"
+                      onClick={() => router.push('/')}
+                    />
+                  )}
                   <div>
                     <button className="p-2 text-white" onClick={handleCloseSidebar}>
                       <AiOutlineClose className="text-3xl font-light" />
