@@ -28,8 +28,8 @@ const Footer: FC = () => {
             onClick={() => router.push('/')}
           />
         </div>
-        <div className="layout-container py-2">
-          <span className="layout-container text-xl text-left text-white">Powered by Gamify</span>
+        <div className="layout-container py-2 text-center">
+          <span className="layout-container text-xl text-white">Powered by Gamify</span>
         </div>
       </div>
     </footer>
