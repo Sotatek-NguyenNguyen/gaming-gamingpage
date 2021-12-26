@@ -6,7 +6,7 @@ import {
 import queryString from 'query-string';
 import { UserTransactionsResponse } from './../utils/interface';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export const useDataTable = () => {
   const [hasNext, setHasNext] = useState(false);

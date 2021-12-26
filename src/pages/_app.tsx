@@ -30,8 +30,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   useEffect(() => {
-    let routeChangeStart = () => NProgress.start();
-    let routeChangeComplete = () => NProgress.done();
+    const routeChangeStart = () => NProgress.start();
+    const routeChangeComplete = () => NProgress.done();
 
     router.events.on('routeChangeStart', routeChangeStart);
     router.events.on('routeChangeComplete', routeChangeComplete);
@@ -53,12 +53,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           <AuthProvider>
             <Component {...pageProps} />
             <ToastContainer
-              hideProgressBar
+              hideProgressBar={false}
               position="bottom-left"
               limit={2}
               newestOnTop
               closeButton={false}
-              autoClose={2000}
+              autoClose={5000}
               transition={Zoom}
             />
           </AuthProvider>

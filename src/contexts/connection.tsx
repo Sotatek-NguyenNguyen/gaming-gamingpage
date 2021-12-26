@@ -23,10 +23,10 @@ const { endpoint, name: env } = chain;
 const ConnectionContext = createContext<ConnectionState>({
   connection: new Connection(endpoint, 'confirmed'),
   sendConnection: new Connection(endpoint, 'confirmed'),
-  endpoint: endpoint,
+  endpoint,
   slippage: DEFAULT_SLIPPAGE,
   setSlippage: (val: number) => {},
-  env: env,
+  env,
   tokens: [],
   tokenMap: new Map<string, TokenInfo>(),
 });
