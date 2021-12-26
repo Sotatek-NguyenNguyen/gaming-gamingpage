@@ -12,7 +12,7 @@ const MyAccount: NextPage = () => {
   return (
     <Layout title={PageTitle.MyAccountPage}>
       <LoadingScreen loading={loading} />
-      <Banner title="MY ACCOUNT" background={2} />
+      <Banner title="MY ACCOUNT" />
       <Detail user={user} loading={loading} />
     </Layout>
   );

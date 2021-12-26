@@ -15,16 +15,10 @@ interface GlobalState {
     value: number | null;
     formatted: string | null;
   };
-  totalStaked: number;
-  allocationLevel: number;
   loading: boolean;
-  isEnabledVotingFeature: boolean;
   isInitTimestamp: boolean;
-  setTotalStaked: Dispatch<SetStateAction<number>>;
-  setAllocationLevel: Dispatch<SetStateAction<number>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
   setAccountBalance: (balance: number | null) => void;
-  setIsEnabledVotingFeature: Dispatch<SetStateAction<boolean>>;
   gameData: GameInfoResponse;
 }
 
@@ -34,21 +28,12 @@ const GlobalContext = createContext<GlobalState>({
     value: null,
     formatted: null,
   },
-  totalStaked: 0,
-  allocationLevel: 0,
   loading: false,
-  isEnabledVotingFeature: false,
   isInitTimestamp: false,
-  // tslint:disable-next-line:no-empty
-  setTotalStaked: () => {},
-  // tslint:disable-next-line:no-empty
-  setAllocationLevel: () => {},
   // tslint:disable-next-line:no-empty
   setLoading: () => {},
   // tslint:disable-next-line:no-empty
   setAccountBalance: () => {},
-  // tslint:disable-next-line:no-empty
-  setIsEnabledVotingFeature: () => {},
   gameData: {
     name: '',
     videoIntroURL: '',
@@ -72,9 +57,6 @@ export const GlobalProvider: React.FC = ({ children }) => {
     value: null,
     formatted: null,
   });
-  const [totalStaked, setTotalStaked] = useState(0);
-  const [allocationLevel, setAllocationLevel] = useState(0);
-  const [isEnabledVotingFeature, setIsEnabledVotingFeature] = useState(false);
   const [isInitTimestamp, setIsInitTimestamp] = useState(false);
   const [gameData, setGameData] = useState<GameInfoResponse>({
     name: '',
@@ -140,16 +122,10 @@ export const GlobalProvider: React.FC = ({ children }) => {
       value={{
         now,
         balance,
-        totalStaked,
-        allocationLevel,
         loading,
-        isEnabledVotingFeature,
         isInitTimestamp,
-        setTotalStaked,
-        setAllocationLevel,
         setLoading,
         setAccountBalance,
-        setIsEnabledVotingFeature,
         gameData,
       }}
     >

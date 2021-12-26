@@ -110,6 +110,9 @@ module.exports = {
       borderWidth: {
         3: '3px',
       },
+      maxHeight: {
+        '418p': '418px',
+      },
     },
     fontFamily: {
       sans: ['Kanit', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],

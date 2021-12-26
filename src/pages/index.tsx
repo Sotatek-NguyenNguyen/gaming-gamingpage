@@ -12,7 +12,9 @@ const Home: NextPage = () => {
   return (
     <Layout title={PageTitle.HomePage}>
       <LoadingScreen loading={loading} />
-      <Banner />
+      <Banner
+        background={gameData?.backgroundURL ? gameData.backgroundURL : '/images/axie-banner.png'}
+      />
       <FavoriteDescription game={gameData} />
     </Layout>
   );
