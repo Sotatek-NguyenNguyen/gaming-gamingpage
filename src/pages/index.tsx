@@ -4,10 +4,10 @@ import { PageTitle } from '../shared/enum';
 import LoadingScreen from '../components/shared/LoadingScreen';
 import Banner from '../components/shared/Banner';
 import FavoriteDescription from '../components/home/FavoriteDescription';
-import { useGetGame } from '../hooks';
+import { useGlobal } from '../hooks';
 
 const Home: NextPage = () => {
-  const { loading, gameData } = useGetGame();
+  const { gameData, loading } = useGlobal();
 
   return (
     <Layout title={PageTitle.HomePage}>

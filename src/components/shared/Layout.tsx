@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+// import { useWallet } from '@solana/wallet-adapter-react';
 import Head from 'next/head';
 // import { useGlobal } from '../../hooks/useGlobal';
 // import useSmartContract from '../../hooks/useSmartContract';

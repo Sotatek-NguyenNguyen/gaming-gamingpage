@@ -6,6 +6,8 @@ import moment from 'moment';
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ClockLayout } from '../sdk/layout';
 import { formatNumber, transformLamportsToSOL } from '../utils/helper';
+import { getGameInfo } from '../api/game';
+import { GameInfoResponse } from '../utils/interface';
 
 interface GlobalState {
   now: number;
@@ -23,6 +25,7 @@ interface GlobalState {
   setLoading: Dispatch<SetStateAction<boolean>>;
   setAccountBalance: (balance: number | null) => void;
   setIsEnabledVotingFeature: Dispatch<SetStateAction<boolean>>;
+  gameData: GameInfoResponse;
 }
 
 const GlobalContext = createContext<GlobalState>({
@@ -36,11 +39,24 @@ const GlobalContext = createContext<GlobalState>({
   loading: false,
   isEnabledVotingFeature: false,
   isInitTimestamp: false,
+  // tslint:disable-next-line:no-empty
   setTotalStaked: () => {},
+  // tslint:disable-next-line:no-empty
   setAllocationLevel: () => {},
+  // tslint:disable-next-line:no-empty
   setLoading: () => {},
+  // tslint:disable-next-line:no-empty
   setAccountBalance: () => {},
+  // tslint:disable-next-line:no-empty
   setIsEnabledVotingFeature: () => {},
+  gameData: {
+    name: '',
+    videoIntroURL: '',
+    logoURL: '',
+    backgroundURL: '',
+    description: '',
+    gameURL: '',
+  },
 });
 
 export const GlobalProvider: React.FC = ({ children }) => {
@@ -60,6 +76,14 @@ export const GlobalProvider: React.FC = ({ children }) => {
   const [allocationLevel, setAllocationLevel] = useState(0);
   const [isEnabledVotingFeature, setIsEnabledVotingFeature] = useState(false);
   const [isInitTimestamp, setIsInitTimestamp] = useState(false);
+  const [gameData, setGameData] = useState<GameInfoResponse>({
+    name: '',
+    videoIntroURL: '',
+    logoURL: '',
+    backgroundURL: '',
+    description: '',
+    gameURL: '',
+  });
 
   useEffect(() => {
     const fetchNow = () => {
@@ -76,6 +100,18 @@ export const GlobalProvider: React.FC = ({ children }) => {
         });
     };
 
+    const fetchGameData = async () => {
+      try {
+        setLoading(true);
+        const gameResponse = await getGameInfo();
+        setGameData(gameResponse);
+      } catch (error) {
+        setLoading(false);
+      }
+      setLoading(false);
+    };
+
+    fetchGameData();
     fetchNow();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -114,6 +150,7 @@ export const GlobalProvider: React.FC = ({ children }) => {
         setLoading,
         setAccountBalance,
         setIsEnabledVotingFeature,
+        gameData,
       }}
     >
       {children}

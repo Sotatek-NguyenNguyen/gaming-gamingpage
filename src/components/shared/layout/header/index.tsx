@@ -6,26 +6,13 @@ import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { navbarMenu } from './constants';
 import CurrentAccountBadge from './CurrentAccountBadge';
 import NavBarMenuItem from './NavBarMenuItem';
-
-const Logo = () => {
-  const router = useRouter();
-
-  return (
-    <Image
-      width={99}
-      height={41}
-      src="/images/gamify_logo_max.svg"
-      alt="gamify gaming logo"
-      className="cursor-pointer"
-      onClick={() => router.push('/')}
-    />
-  );
-};
+import { useGlobal } from '../../../../hooks';
 
 const Header: React.FC = () => {
+  const router = useRouter();
+  const { gameData } = useGlobal();
   const { connected } = useWallet();
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [navMenus, setNavMenus] = useState(navbarMenu);
 
   const handleOpenSidebar = () => {
     setSidebarVisible(true);
@@ -49,7 +36,16 @@ const Header: React.FC = () => {
     <div className="bg-primary-100">
       <div className="flex items-center justify-between layout-container">
         <div className="items-center">
-          <Logo />
+          {gameData?.logoURL && (
+            <img
+              width={99}
+              height={41}
+              src={gameData.logoURL}
+              alt="gamify gaming logo"
+              className="cursor-pointer"
+              onClick={() => router.push('/')}
+            />
+          )}
         </div>
         <ul className="hidden md:flex items-center">
           {navMemo
@@ -90,7 +86,7 @@ const Header: React.FC = () => {
 
                 <div className="mt-6">
                   <ul className="flex flex-col">
-                    {navMenus
+                    {navMemo
                       .filter((menu) => menu.enable === true)
                       .map((menu) => (
                         <NavBarMenuItem
