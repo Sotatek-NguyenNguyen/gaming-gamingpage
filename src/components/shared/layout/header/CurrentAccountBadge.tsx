@@ -96,7 +96,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
     }
   }, [wallet, alertError, showErr, visible]);
 
-  if (!wallet || (!visible && !connected)) {
+  if (!wallet || (!visible && !connected) || !isAuthenticated) {
     return (
       <button
         onClick={openModal}

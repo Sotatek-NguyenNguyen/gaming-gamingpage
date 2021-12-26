@@ -94,7 +94,7 @@ export const GlobalProvider: React.FC = ({ children }) => {
     };
 
     fetchGameData();
-    fetchNow();
+    // fetchNow();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

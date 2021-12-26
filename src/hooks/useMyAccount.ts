@@ -20,10 +20,10 @@ export const useMyAccount = () => {
   }, []);
 
   useEffect(() => {
-    if (!connected) {
+    if (!connected || (connected && !isAuthenticated)) {
       router.push('/');
     }
-  }, [router, connected]);
+  }, [router, connected, isAuthenticated]);
 
   const fetchData = async () => {
     try {

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+// import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState, useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -6,10 +6,11 @@ import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { navbarMenu } from './constants';
 import CurrentAccountBadge from './CurrentAccountBadge';
 import NavBarMenuItem from './NavBarMenuItem';
-import { useGlobal } from '../../../../hooks';
+import { useGlobal, useAuth } from '../../../../hooks';
 
 const Header: React.FC = () => {
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const { gameData } = useGlobal();
   const { connected } = useWallet();
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -24,13 +25,13 @@ const Header: React.FC = () => {
 
   const navMemo = useMemo(() => {
     const objIndex = navbarMenu.findIndex((obj) => obj.key === 'my-account');
-    if (connected) {
+    if (isAuthenticated) {
       navbarMenu[objIndex].enable = true;
     } else {
       navbarMenu[objIndex].enable = false;
     }
     return navbarMenu;
-  }, [connected]);
+  }, [isAuthenticated]);
 
   return (
     <div className="bg-primary-100">
