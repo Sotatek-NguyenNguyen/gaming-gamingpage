@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  getCurrentUserTransactionHistory,
-  getCurrentUserInGameBalanceChangeHistory,
-} from './../api/user';
+import { getCurrentUserTransactionHistory, getCurrentUserNftItems } from './../api/user';
 import queryString from 'query-string';
 import { UserTransactionsResponse } from './../utils/interface';
 
@@ -70,7 +67,7 @@ export const useDataTable = () => {
     setLoading(true);
     try {
       const serverResponseData = tabActive
-        ? await getCurrentUserInGameBalanceChangeHistory({
+        ? await getCurrentUserNftItems({
             params,
           })
         : await getCurrentUserTransactionHistory({

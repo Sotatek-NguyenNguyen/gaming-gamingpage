@@ -22,6 +22,8 @@ export interface GameInfoResponse {
   backgroundURL: string;
   description: string;
   gameURL: string;
+  currencyCode: string;
+  currencyName: string;
 }
 
 export interface UserDetailResponse {
@@ -45,6 +47,9 @@ export interface UserTransaction {
   amount: number;
   transactionId: string;
   type: string;
+  note?: string;
+  referenceId?: string;
+  address?: string;
 }
 
 export interface UserTransactionsResponse {

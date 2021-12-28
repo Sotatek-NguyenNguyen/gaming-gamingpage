@@ -24,3 +24,9 @@ export const getCurrentUserInGameBalanceChangeHistory = (
 ): Promise<UserTransactionsResponse> => {
   return axios.get('my/in-game-balances-changes', params);
 };
+
+export const getCurrentUserNftItems = (
+  params: Record<string, unknown>,
+): Promise<UserTransactionsResponse> => {
+  return axios.get('my/nft', params);
+};

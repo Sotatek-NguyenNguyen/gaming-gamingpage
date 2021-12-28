@@ -7,6 +7,7 @@ import DepositModal from './DepositModal';
 import WithdrawModal from './WithdrawModal';
 import MintNFTModal from './MintNFTModal';
 import { UserDetailResponse } from '../../utils/interface';
+import { useGlobal } from '../../hooks';
 
 interface Props {
   user?: UserDetailResponse;
@@ -15,6 +16,7 @@ interface Props {
 
 const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey } = useWallet();
+  const { gameData } = useGlobal();
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
 
   const handleDeposit = () => {
@@ -68,7 +70,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
         <div className="text-center text-white bg-primary-500 py-14 px-10 rounded-lg">
           <h2 className="text-2xl">GAME X BALANCE</h2>
           <div className="mt-4 flex items-center justify-center gap-3">
-            <span className="text-2xl">ABC</span>
+            <span className="text-2xl">{gameData.currencyCode}</span>
             {loading ? (
               <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
             ) : (
@@ -78,9 +80,9 @@ const Detail: FC<Props> = ({ user, loading }) => {
         </div>
         <div className="mt-6 md:flex gap-x-4 justify-between">
           <div className="text-white bg-primary-500 p-6 rounded-lg flex-1">
-            <div className="bg-primary-100 bg-opacity-50 p-3 rounded-lg">
+            <div className="bg-primary-100 bg-opacity-50 p-3 rounded-lg h-full">
               <div className="text-xl uppercase">Player Info</div>
-              <div className="text-base mt-2 ml-3">Player ID</div>
+              {/* <div className="text-base mt-2 ml-3">Player ID</div>
               {loading ? (
                 <span className="h-3 bg-gray-300 rounded-full w-full animate-pulse" />
               ) : (
@@ -90,7 +92,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
                   readOnly
                   value={user?.accountInGameId}
                 />
-              )}
+              )} */}
               <div className="text-base mt-4 ml-3">Wallet Address</div>
               {loading ? (
                 <span className="h-3 bg-gray-300 rounded-full w-full animate-pulse" />
@@ -106,19 +108,19 @@ const Detail: FC<Props> = ({ user, loading }) => {
           </div>
           <div className="text-white bg-primary-500 py-7 mt-6 md:mt-0 px-11 rounded-lg md:w-96 flex flex-col items-center justify-between">
             <button
-              className="w-56 font-bold rounded-xl mt-4 md:mt-0 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
+              className="w-56 font-bold rounded-xl mt-4 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
               onClick={handleDeposit}
             >
               DEPOSIT
             </button>
             <button
-              className="w-56 font-bold rounded-xl mt-4 md:mt-0 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
+              className="w-56 font-bold rounded-xl mt-4 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
               onClick={handleWithdraw}
             >
               WITHDRAW
             </button>
             <button
-              className="w-56 font-bold rounded-xl mt-4 md:mt-0 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
+              className="w-56 font-bold rounded-xl mt-4 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
               onClick={handleMintNFT}
             >
               REQUEST MINT NFT

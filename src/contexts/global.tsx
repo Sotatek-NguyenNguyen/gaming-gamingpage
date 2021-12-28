@@ -41,6 +41,8 @@ const GlobalContext = createContext<GlobalState>({
     backgroundURL: '',
     description: '',
     gameURL: '',
+    currencyCode: '',
+    currencyName: '',
   },
 });
 
@@ -65,6 +67,8 @@ export const GlobalProvider: React.FC = ({ children }) => {
     backgroundURL: '',
     description: '',
     gameURL: '',
+    currencyCode: '',
+    currencyName: '',
   });
 
   useEffect(() => {
