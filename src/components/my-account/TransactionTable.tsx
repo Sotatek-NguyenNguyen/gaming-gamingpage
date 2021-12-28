@@ -20,7 +20,7 @@ const TransactionTable: React.FC<Props> = ({
   nextPage,
   previousPage,
 }) => {
-  const { data, page, pageSize, total, totalPage } = paginatedTransaction;
+  const { data, page, /* pageSize, total, */ totalPage } = paginatedTransaction;
   const handleMove = async (page: number) => {
     await movePage(page);
   };
