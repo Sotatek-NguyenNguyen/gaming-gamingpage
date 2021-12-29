@@ -6,9 +6,10 @@ interface Props {
   onConfirm?: () => void | Promise<void>;
   confirmText?: string;
   playerKey?: string;
+  chargeLoading: boolean;
 }
 
-const MintNFTModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey }) => {
+const MintNFTModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey, chargeLoading }) => {
   return (
     <BaseModal
       dense
@@ -16,6 +17,7 @@ const MintNFTModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey })
       loading={false}
       confirmText={confirmText}
       modalMW="md:w-46-6rem w-full"
+      chargeLoading={chargeLoading}
       customBody={
         <>
           <div className="flex gap-x-2 justify-between text-xl">

@@ -1,5 +1,7 @@
-import React, { FC, useMemo } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import React, { FC, useMemo, useState } from 'react';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { Connection, clusterApiUrl, PublicKey, Commitment, ConfirmOptions } from '@solana/web3.js';
+import { Program, Provider, BN, web3 } from '@project-serum/anchor';
 import NavbarMenus from './NavbarMenus';
 import TransactionsTable from './TransactionsTable';
 import { confirmAlert } from 'react-confirm-alert';
@@ -7,27 +9,107 @@ import DepositModal from './DepositModal';
 import WithdrawModal from './WithdrawModal';
 import MintNFTModal from './MintNFTModal';
 import { UserDetailResponse } from '../../utils/interface';
-import { useGlobal } from '../../hooks';
+import { useGlobal, useAlert } from '../../hooks';
+import { IDL } from '../../utils/treasury';
+import * as spl from '@solana/spl-token';
+import { envConfig } from '../../configs';
 
 interface Props {
   user?: UserDetailResponse;
   loading: boolean;
 }
 
+declare global {
+  interface Window {
+    solana: any;
+  }
+}
+
+const treasuryPDASeed = Buffer.from('treasury');
+
 const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey } = useWallet();
+  const { connection } = useConnection();
   const { gameData } = useGlobal();
+  const { alertError, alertSuccess } = useAlert();
+  const [chargeLoading, setChargeLoading] = useState<boolean>(false);
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
+
+  const opts: ConfirmOptions = {
+    preflightCommitment: 'processed' as Commitment,
+    commitment: 'processed' as Commitment,
+  };
+
+  const { SystemProgram } = web3;
+  const gameId = new PublicKey('omewePP1XNdH64siQCip5ZR72wPv3y8KJUwm8Jgwx3b');
 
   const handleDeposit = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
+        async function sendTransaction(depositValue: number) {
+          const wallet = window.solana;
+
+          if (publicKey) {
+            setChargeLoading(true);
+            try {
+              const network = clusterApiUrl('devnet');
+              const connection = new Connection(network, opts.preflightCommitment);
+              const provider = new Provider(connection, wallet, opts);
+              const program = new Program(IDL, envConfig.CONTRACT_TOKEN_ADDRESS, provider);
+
+              // token for deposit and withdraw
+              const token = new spl.Token(
+                provider.connection,
+                new PublicKey('CTD9ZP9gxcR2yQSy8pqaqDSTmzHykDNuTafkhTR69sjn'),
+                spl.TOKEN_PROGRAM_ID,
+                wallet.payer,
+              );
+
+              const fromTokenAccount = await token.getOrCreateAssociatedAccountInfo(
+                wallet.publicKey,
+              );
+
+              const [treasuryAccount] = await PublicKey.findProgramAddress(
+                [treasuryPDASeed, gameId.toBuffer()],
+                program.programId,
+              );
+
+              const [treasuryTokenAccount] = await PublicKey.findProgramAddress(
+                [treasuryPDASeed, gameId.toBuffer(), token.publicKey.toBuffer()],
+                program.programId,
+              );
+
+              const signature = await program.rpc.deposit(gameId, new BN(depositValue), {
+                accounts: {
+                  sender: program.provider.wallet.publicKey,
+                  depositUser: program.provider.wallet.publicKey,
+                  senderTokenAccount: fromTokenAccount.address,
+                  treasuryAccount,
+                  treasuryTokenAccount,
+                  tokenProgram: spl.TOKEN_PROGRAM_ID,
+                  systemProgram: SystemProgram.programId,
+                },
+              });
+              alertSuccess('Deposited successfully');
+              console.log('signature: ', signature);
+            } catch (error) {
+              console.error(error);
+              setChargeLoading(false);
+              onClose();
+              alertError('Transation Canceled');
+            }
+            setChargeLoading(false);
+            onClose();
+          }
+        }
+
         return (
           <DepositModal
             onClose={onClose}
-            onConfirm={onClose}
-            confirmText="Deposit"
+            onConfirm={sendTransaction}
+            confirmText={chargeLoading ? 'Depositing' : 'Deposit'}
             playerKey={base58}
+            chargeLoading={chargeLoading}
           />
         );
       },
@@ -43,6 +125,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             onConfirm={onClose}
             confirmText="Withdraw"
             playerKey={base58}
+            chargeLoading={chargeLoading}
           />
         );
       },
@@ -58,6 +141,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             onConfirm={onClose}
             confirmText="Mint"
             playerKey={base58}
+            chargeLoading={chargeLoading}
           />
         );
       },

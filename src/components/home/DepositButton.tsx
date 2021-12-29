@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useAlert, useAuth } from '../../hooks';
 import { confirmAlert } from 'react-confirm-alert';
@@ -8,6 +8,7 @@ const DepositButton: FC = () => {
   const { alertError } = useAlert();
   const { wallet, publicKey } = useWallet();
   const { isAuthenticated } = useAuth();
+  const [chargeLoading, setChargeLoading] = useState<boolean>(false);
 
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
 
@@ -24,6 +25,7 @@ const DepositButton: FC = () => {
             onConfirm={onClose}
             confirmText="Deposit"
             playerKey={base58}
+            chargeLoading={chargeLoading}
           />
         );
       },

@@ -6,15 +6,23 @@ interface Props {
   onConfirm?: () => void | Promise<void>;
   confirmText?: string;
   playerKey?: string;
+  chargeLoading: boolean;
 }
 
-const WithdrawModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey }) => {
+const WithdrawModal: FC<Props> = ({
+  onClose,
+  onConfirm,
+  confirmText,
+  playerKey,
+  chargeLoading,
+}) => {
   return (
     <BaseModal
       dense
       modalName="WITHDRAW"
       loading={false}
       confirmText={confirmText}
+      chargeLoading={chargeLoading}
       customBody={
         <div>
           <div className="text-base mt-2 ml-3">Game Wallet Address</div>

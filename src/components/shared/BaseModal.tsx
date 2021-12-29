@@ -16,6 +16,7 @@ interface Props {
   customBody?: JSX.Element;
   dense?: boolean;
   modalMW?: string;
+  chargeLoading: boolean;
 }
 
 const BaseModal: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const BaseModal: React.FC<Props> = ({
   onClose,
   dense,
   modalMW = 'md:w-32rem',
+  chargeLoading,
 }) => {
   return (
     <div
@@ -75,6 +77,7 @@ const BaseModal: React.FC<Props> = ({
           <button
             className="w-56 h-14 mt-6 uppercase text-white rounded-xl bg-transparent bg-opacity-70 hover:bg-secondary-100 border-3 border-primary-200 transition-all"
             onClick={handleConfirm}
+            disabled={chargeLoading}
           >
             {confirmText}
           </button>

@@ -1,20 +1,30 @@
-import { FC, useMemo } from 'react';
+import { FC, useState } from 'react';
 import BaseModal from '../shared/BaseModal';
 
 interface Props {
   onClose?: () => void | Promise<void>;
-  onConfirm?: () => void | Promise<void>;
+  onConfirm?: (val: number) => void | Promise<void>;
   confirmText?: string;
   playerKey?: string;
+  chargeLoading: boolean;
 }
 
-const DepositModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey }) => {
+const DepositModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey, chargeLoading }) => {
+  const [depositValue, setDepositValue] = useState<number>(0);
+
+  const handleSubmitDeposit = () => {
+    if (onConfirm && depositValue) {
+      onConfirm(depositValue);
+    }
+  };
+
   return (
     <BaseModal
       dense
       modalName="DEPOSIT"
       loading={false}
       confirmText={confirmText}
+      chargeLoading={chargeLoading}
       customBody={
         <div>
           <div className="text-base mt-2 ml-3">Game Wallet Address</div>
@@ -36,6 +46,8 @@ const DepositModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey })
             <input
               type="number"
               className="bg-white rounded-full outline-none py-3 pl-7 pr-32 w-full"
+              defaultValue={depositValue ?? ''}
+              onChange={(e) => setDepositValue(Number(e.target.value))}
             />
             <span className="uppercase absolute top-1/2 right-10 transform -translate-y-1/2">
               Token
@@ -44,7 +56,7 @@ const DepositModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey })
         </div>
       }
       onClose={onClose}
-      handleConfirm={onConfirm}
+      handleConfirm={handleSubmitDeposit}
     />
   );
 };

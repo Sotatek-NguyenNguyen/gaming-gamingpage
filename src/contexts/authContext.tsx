@@ -2,12 +2,11 @@ import { createContext, useEffect, useState } from 'react';
 import { Cluster, PublicKey } from '@solana/web3.js';
 import { useConnection, useLocalStorageState } from '../hooks';
 import { formatNumber, transformLamportsToSOL } from '../shared/helper';
-import {
-  // isTokenOwnedByAddress,
+import /* isTokenOwnedByAddress,
   verifyAndDecode,
-  /* createTokenWithSignMessageFunc,
+  createTokenWithSignMessageFunc,
   createTokenWithWalletAdapter, */
-} from '@gamify/onchain-program-sdk';
+'@gamify/onchain-program-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import * as bs58 from 'bs58';
 import { signatureMsgAuth, loginAuth } from '../api/auth';
