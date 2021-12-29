@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useRouter } from 'next/router';
 import { getUserDetail } from '../api/user';
@@ -13,9 +13,22 @@ export const useMyAccount = () => {
 
   const router = useRouter();
 
+  const reFetchUserDetail = async () => {
+    try {
+      const userResponse = await getUserDetail();
+      setUser(userResponse);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchData();
+      const interval = setInterval(() => reFetchUserDetail(), 5000);
+      return () => {
+        clearInterval(interval);
+      };
     }
   }, []);
 

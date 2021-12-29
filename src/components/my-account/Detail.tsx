@@ -12,7 +12,6 @@ import { UserDetailResponse } from '../../utils/interface';
 import { useGlobal, useAlert } from '../../hooks';
 import { IDL } from '../../utils/treasury';
 import * as spl from '@solana/spl-token';
-import { roundNumberByDecimal } from '../../utils/helper';
 
 interface Props {
   user?: UserDetailResponse;
@@ -29,7 +28,7 @@ const treasuryPDASeed = Buffer.from('treasury');
 
 const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey } = useWallet();
-  const { connection } = useConnection();
+  // const { connection } = useConnection();
   const { gameData } = useGlobal();
   const { alertError, alertSuccess } = useAlert();
   const [chargeLoading, setChargeLoading] = useState<boolean>(false);
@@ -42,15 +41,13 @@ const Detail: FC<Props> = ({ user, loading }) => {
 
   const { SystemProgram } = web3;
 
-  console.log(roundNumberByDecimal(4, 6));
-
   const handleDeposit = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
         async function sendTransaction(depositValue: number) {
           const wallet = window.solana;
 
-          if (publicKey) {
+          if (publicKey && gameData.gameId && gameData.programId && gameData.tokenAddress) {
             const gameId = new PublicKey(gameData.gameId);
             setChargeLoading(true);
             try {
@@ -98,7 +95,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
               console.error(error);
               setChargeLoading(false);
               onClose();
-              alertError('Transation Canceled');
+              alertError('Transaction Canceled');
             }
             setChargeLoading(false);
             onClose();
