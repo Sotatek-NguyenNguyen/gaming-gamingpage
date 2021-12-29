@@ -22,8 +22,12 @@ export interface GameInfoResponse {
   backgroundURL: string;
   description: string;
   gameURL: string;
-  currencyCode: string;
-  currencyName: string;
+  tokenCode: string;
+  tokenName: string;
+  walletAddress: string;
+  programId: string;
+  gameId: string;
+  tokenAddress: string;
 }
 
 export interface UserDetailResponse {

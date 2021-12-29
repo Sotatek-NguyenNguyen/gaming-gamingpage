@@ -6,10 +6,18 @@ interface Props {
   onConfirm?: (val: number) => void | Promise<void>;
   confirmText?: string;
   playerKey?: string;
+  gameWallet?: string;
   chargeLoading: boolean;
 }
 
-const DepositModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey, chargeLoading }) => {
+const DepositModal: FC<Props> = ({
+  onClose,
+  onConfirm,
+  confirmText,
+  playerKey,
+  chargeLoading,
+  gameWallet,
+}) => {
   const [depositValue, setDepositValue] = useState<number>(0);
 
   const handleSubmitDeposit = () => {
@@ -32,7 +40,7 @@ const DepositModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey, c
             type="text"
             className="bg-white mt-1 bg-opacity-50 rounded-full outline-none text-primary-100 py-3 px-7 w-full"
             readOnly
-            value="4zj7KF13agrr3VYEt3RxxhDtzHGQmL7KdhzGZ9nzp1xD"
+            value={gameWallet}
           />
           <div className="text-base mt-4 ml-3">Player Wallet Address</div>
           <input

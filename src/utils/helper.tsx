@@ -1,4 +1,5 @@
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import Decimal from 'decimal.js';
 
 const numberFormatter = new Intl.NumberFormat('en-US', {
   style: 'decimal',
@@ -53,4 +54,14 @@ export const getListPageFromTotalPage = (totalPage: number): number[] => {
   }
 
   return listPage;
+};
+
+export const roundNumberByDecimal = (
+  input: number | string | Decimal,
+  decimal: number,
+): Decimal => {
+  return new Decimal(
+    // tslint:disable-next-line:radix
+    parseInt(new Decimal(input).times(Decimal.pow(10, decimal)).toString()),
+  ).dividedBy(Decimal.pow(10, decimal));
 };
