@@ -12,6 +12,7 @@ import { UserDetailResponse } from '../../utils/interface';
 import { useGlobal, useAlert } from '../../hooks';
 import { IDL } from '../../utils/treasury';
 import * as spl from '@solana/spl-token';
+import { roundNumberByDecimal, renderTokenBalance } from '../../utils/helper';
 
 interface Props {
   user?: UserDetailResponse;
@@ -78,17 +79,21 @@ const Detail: FC<Props> = ({ user, loading }) => {
                 program.programId,
               );
 
-              const signature = await program.rpc.deposit(gameId, new BN(depositValue * 1000000), {
-                accounts: {
-                  sender: program.provider.wallet.publicKey,
-                  depositUser: program.provider.wallet.publicKey,
-                  senderTokenAccount: fromTokenAccount.address,
-                  treasuryAccount,
-                  treasuryTokenAccount,
-                  tokenProgram: spl.TOKEN_PROGRAM_ID,
-                  systemProgram: SystemProgram.programId,
+              const signature = await program.rpc.deposit(
+                gameId,
+                new BN(depositValue * (10 * gameData.tokenDecimals)),
+                {
+                  accounts: {
+                    sender: program.provider.wallet.publicKey,
+                    depositUser: program.provider.wallet.publicKey,
+                    senderTokenAccount: fromTokenAccount.address,
+                    treasuryAccount,
+                    treasuryTokenAccount,
+                    tokenProgram: spl.TOKEN_PROGRAM_ID,
+                    systemProgram: SystemProgram.programId,
+                  },
                 },
-              });
+              );
               alertSuccess('Deposited successfully');
               console.log('signature: ', signature);
             } catch (error) {
@@ -158,7 +163,11 @@ const Detail: FC<Props> = ({ user, loading }) => {
             {loading ? (
               <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
             ) : (
-              <span className="text-5xl">{user?.balance}</span>
+              <span className="text-5xl">
+                {user && user?.balance !== 0
+                  ? renderTokenBalance(user.balance / (10 * gameData.tokenDecimals), 2)
+                  : user?.balance}
+              </span>
             )}
           </div>
         </div>

@@ -47,6 +47,7 @@ const GlobalContext = createContext<GlobalState>({
     programId: '',
     gameId: '',
     tokenAddress: '',
+    tokenDecimals: 6,
   },
 });
 
@@ -77,6 +78,7 @@ export const GlobalProvider: React.FC = ({ children }) => {
     programId: '',
     gameId: '',
     tokenAddress: '',
+    tokenDecimals: 6,
   });
 
   useEffect(() => {

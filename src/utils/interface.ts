@@ -28,6 +28,7 @@ export interface GameInfoResponse {
   programId: string;
   gameId: string;
   tokenAddress: string;
+  tokenDecimals: number;
 }
 
 export interface UserDetailResponse {
@@ -36,7 +37,7 @@ export interface UserDetailResponse {
   updatedAt: string;
   address: string;
   accountInGameId: string;
-  balance: string;
+  balance: number;
 }
 
 export interface UserWithdrawResponse {

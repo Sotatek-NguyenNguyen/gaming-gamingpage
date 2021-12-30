@@ -65,3 +65,18 @@ export const roundNumberByDecimal = (
     parseInt(new Decimal(input).times(Decimal.pow(10, decimal)).toString()),
   ).dividedBy(Decimal.pow(10, decimal));
 };
+
+export function renderTokenBalance(
+  balance: string | number | Decimal | null | undefined,
+  tokenDecimals: number,
+): number {
+  if (balance === null || balance === undefined) {
+    return 0;
+  }
+
+  if (typeof balance === 'string') {
+    return parseFloat(parseFloat(balance).toFixed(tokenDecimals));
+  }
+
+  return new Decimal(parseFloat(balance.toString()).toFixed(tokenDecimals)).toNumber();
+}

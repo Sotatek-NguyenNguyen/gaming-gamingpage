@@ -29,6 +29,15 @@ export const useDataTable = () => {
       setHasPrevious(() => {
         return currPaginated.page > 1;
       });
+      if (currPaginated.page === 1) {
+        const interval = setInterval(
+          () => getDataBySection({ page: 1, pageSize: PAGE_SIZE }, true),
+          10000,
+        );
+        return () => {
+          clearInterval(interval);
+        };
+      }
     }
   }, [currPaginated]);
 
@@ -55,7 +64,7 @@ export const useDataTable = () => {
     }
   };
 
-  const getDataBySection = async (params: object): Promise<void> => {
+  const getDataBySection = async (params: object, hideLoading?: boolean): Promise<void> => {
     // const condition: ITransactionFilter | undefined = {};
     /* if (params.section) {
       condition.section = params.section;
@@ -64,7 +73,7 @@ export const useDataTable = () => {
       condition.walletAddress = params.walletPublicKey;
     } */
 
-    setLoading(true);
+    if (!hideLoading) setLoading(true);
     try {
       const serverResponseData = tabActive
         ? await getCurrentUserNftItems({
@@ -78,7 +87,7 @@ export const useDataTable = () => {
     } catch (err) {
       setCurrPaginated(null);
     } finally {
-      setLoading(false);
+      if (!hideLoading) setLoading(false);
     }
   };
 
