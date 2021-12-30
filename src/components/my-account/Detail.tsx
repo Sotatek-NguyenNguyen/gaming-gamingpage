@@ -81,7 +81,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
 
               const signature = await program.rpc.deposit(
                 gameId,
-                new BN(depositValue * (10 * gameData.tokenDecimals)),
+                new BN(depositValue * Math.pow(10, gameData.tokenDecimals)),
                 {
                   accounts: {
                     sender: program.provider.wallet.publicKey,
