@@ -1,7 +1,7 @@
 export const navbarMenu = [
   {
-    name: 'Home',
-    key: 'home',
+    name: 'Game Detail',
+    key: 'game-detail',
     link: '/',
     externalLink: '',
     enable: true,

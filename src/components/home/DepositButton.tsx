@@ -113,10 +113,10 @@ const DepositButton: FC = () => {
 
   return (
     <button
-      className="mt-12 font-bold rounded-xl uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 px-10 py-5 border-3 border-primary-200 transition-all"
+      className="mt-12 px-12 h-14 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
       onClick={handleDeposit}
     >
-      DEPOSIT TO PLAY
+      Deposit To Play
     </button>
   );
 };

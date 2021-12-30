@@ -39,42 +39,50 @@ const InGameChangeTable: React.FC<Props> = ({
 
   return (
     <>
-      <table className="w-full text-white table-fixed">
-        <thead className={`border-b-2 border-white border-opacity-50`}>
-          <tr className="text-lg">
-            <th className="w-1/4 px-5 py-4 md:py-10 text-left">Item ID</th>
-            <th className="w-1/4 px-4 py-4 md:py-10 md:table-cell text-center">Item Name</th>
-            <th className="w-1/4 px-4 py-4 md:py-10 text-center">Added on</th>
-            <th className="w-1/4 px-4 py-4 md:py-10 text-center">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data &&
-            data.length > 0 &&
-            data.map(({ id, userAddress, createdAt }) => (
-              <tr key={id} className="border-b border-white border-opacity-50 font-normal">
-                <td className="px-5 py-4 md:py-6 w-full truncate">{userAddress}</td>
-                <td className="px-5 py-4 md:py-6 text-center">
-                  <div className="mx-auto text-left w-max">
-                    <p className="uppercase font-bold">NFT</p>
-                    <p>Happy Bunny</p>
-                  </div>
-                </td>
-                <td className="px-5 py-4 md:py-6 text-center">
-                  {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}
-                </td>
-                <td
-                  className={`px-5 py-4 md:py-6 text-center uppercase ${
-                    base58 === userAddress ? 'text-tx_status-400' : 'text-tx_status-600'
+      <div className="overflow-hidden rounded-2xl bg-primary-200">
+        <table className="w-full table-fixed text-base">
+          <thead className={`border-b border-white border-opacity-15 text-white`}>
+            <tr className="text-lg text-left">
+              <th className="w-1/4 px-5 py-5 text-left font-semibold">Item ID</th>
+              <th className="w-1/4 px-5 py-5 font-semibold">Item Name</th>
+              <th className="w-1/4 px-5 py-5 font-semibold">Added on</th>
+              <th className="w-1/4 px-5 py-5 font-semibold">Status</th>
+            </tr>
+          </thead>
+          <tbody className="text-primary-800">
+            {data && data.length > 0 ? (
+              data.map(({ id, userAddress, createdAt }, idx) => (
+                <tr
+                  key={id}
+                  className={`${
+                    data.length - 1 !== idx ? 'border-b border-white border-opacity-15' : ''
                   }`}
                 >
-                  {base58 === userAddress ? 'minted' : 'minted by other'}
-                </td>
-              </tr>
-            ))}
-          <tr className="h-20" />
-        </tbody>
-      </table>
+                  <td className="px-5 py-6 w-full truncate">{userAddress}</td>
+                  <td className="px-5 py-6">
+                    <div className="mx-auto w-max">
+                      <p className="uppercase font-bold">NFT</p>
+                      <p>Happy Bunny</p>
+                    </div>
+                  </td>
+                  <td className="px-5 py-6">
+                    {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}
+                  </td>
+                  <td
+                    className={`px-5 py-6 uppercase ${
+                      base58 === userAddress ? 'text-tx_status-400' : 'text-tx_status-600'
+                    }`}
+                  >
+                    {base58 === userAddress ? 'minted' : 'minted by other'}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr className="h-10" />
+            )}
+          </tbody>
+        </table>
+      </div>
       <Paginations
         totalPages={totalPage}
         currentPage={page}

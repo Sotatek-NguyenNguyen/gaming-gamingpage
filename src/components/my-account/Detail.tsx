@@ -131,6 +131,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             confirmText="Withdraw"
             playerKey={base58}
             chargeLoading={chargeLoading}
+            gameWallet={gameData.walletAddress}
           />
         );
       },
@@ -155,15 +156,15 @@ const Detail: FC<Props> = ({ user, loading }) => {
 
   return (
     <div className="bg-primary-100">
-      <div className="layout-container pt-5 pb-14">
-        <div className="text-center text-white bg-primary-500 py-14 px-10 rounded-lg">
-          <h2 className="text-2xl">GAME X BALANCE</h2>
+      <div className="layout-container pt-12 pb-14">
+        <div className="text-center text-white bg-primary-200 p-8 rounded-2xl font-bold">
+          <h2 className="text-2xl text-primary-800">GAME X BALANCE</h2>
           <div className="mt-4 flex items-center justify-center gap-3">
-            <span className="text-2xl">{gameData.tokenCode}</span>
+            <span className="text-4xl">{gameData.tokenCode}</span>
             {loading ? (
               <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
             ) : (
-              <span className="text-5xl">
+              <span className="text-4xl">
                 {user && user?.balance !== 0
                   ? renderTokenBalance(user.balance / (10 * gameData.tokenDecimals), 2)
                   : user?.balance}
@@ -172,10 +173,9 @@ const Detail: FC<Props> = ({ user, loading }) => {
           </div>
         </div>
         <div className="mt-6 md:flex gap-x-4 justify-between">
-          <div className="text-white bg-primary-500 p-6 rounded-lg flex-1">
-            <div className="bg-primary-100 bg-opacity-50 p-3 rounded-lg h-full">
-              <div className="text-xl uppercase">Player Info</div>
-              {/* <div className="text-base mt-2 ml-3">Player ID</div>
+          <div className="text-white bg-primary-200 p-10 rounded-2xl flex-1">
+            <div className="font-bold text-base uppercase">Player Info</div>
+            {/* <div className="text-base mt-2 ml-3">Player ID</div>
               {loading ? (
                 <span className="h-3 bg-gray-300 rounded-full w-full animate-pulse" />
               ) : (
@@ -186,41 +186,40 @@ const Detail: FC<Props> = ({ user, loading }) => {
                   value={user?.accountInGameId}
                 />
               )} */}
-              <div className="text-base mt-4 ml-3">Wallet Address</div>
-              {loading ? (
-                <span className="h-3 bg-gray-300 rounded-full w-full animate-pulse" />
-              ) : (
-                <input
-                  type="text"
-                  className="bg-white mt-1 bg-opacity-50 rounded-full outline-none text-primary-100 py-3 px-7 w-full"
-                  readOnly
-                  value={user?.address}
-                />
-              )}
-            </div>
+            <div className="mt-6 text-primary-800">Wallet Address</div>
+            {loading ? (
+              <span className="h-3 bg-gray-300 rounded-full w-full animate-pulse" />
+            ) : (
+              <input
+                type="text"
+                className="bg-primary-800 rounded-full outline-none text-primary-200 py-3 px-7 w-full mt-3"
+                readOnly
+                value={user?.address}
+              />
+            )}
           </div>
-          <div className="text-white bg-primary-500 py-7 mt-6 md:mt-0 px-11 rounded-lg md:w-96 flex flex-col items-center justify-between">
+          <div className="text-white bg-primary-200 py-7 mt-6 md:mt-0 px-12 rounded-2xl md:w-96 flex flex-col items-center justify-between">
             <button
-              className="w-56 font-bold rounded-xl mt-4 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
+              className="w-60 p-2 h-12 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
               onClick={handleDeposit}
             >
-              DEPOSIT
+              Deposit
             </button>
             <button
-              className="w-56 font-bold rounded-xl mt-4 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
+              className="w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
               onClick={handleWithdraw}
             >
-              WITHDRAW
+              Withdraw
             </button>
             <button
-              className="w-56 font-bold rounded-xl mt-4 uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 p-3 border-3 border-primary-200 transition-all"
+              className="w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
               onClick={handleMintNFT}
             >
-              REQUEST MINT NFT
+              Request Mint NFT
             </button>
           </div>
         </div>
-        <div className="mt-6 p-6 bg-primary-500 text-white rounded-lg">
+        <div className="mt-6 text-white">
           <NavbarMenus />
           <TransactionsTable />
         </div>

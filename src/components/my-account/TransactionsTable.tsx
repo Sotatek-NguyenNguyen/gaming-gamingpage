@@ -17,7 +17,7 @@ const TransactionsTable: FC = ({}) => {
   } = useDataTable();
 
   return (
-    <div className="relative w-full overflow-hidden rounded-r-xl rounded-bl-xl bg-primary-100">
+    <div className="relative w-full mt-7">
       {loading && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-black bg-opacity-30">
           <Spinner variant="alt" size="medium" />

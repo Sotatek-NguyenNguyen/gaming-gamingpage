@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 // import clsx from 'clsx';
 
 interface Props {
@@ -6,11 +6,15 @@ interface Props {
   background?: string;
 }
 
-const Banner: React.FC<Props> = ({ title, background = '/images/Sub-header.png' }) => {
+const Banner: FC<Props> = ({ title, background }) => {
   return (
-    <div className="max-h-418p overflow-hidden">
-      <div className="relative">
-        <img src={background} className="w-full" alt="game banner" />
+    <div className="max-h-600p overflow-hidden">
+      <div className="relative max-h-600p">
+        {background ? (
+          <img src={background} className="max-w-full" alt="game banner" />
+        ) : (
+          <span className="h-96 bg-gray-300 rounded-full w-full animate-pulse" />
+        )}
         {/* <div className="flex items-center justify-center md:block h-418p layout-container" /> */}
         {title && (
           <div className="absolute bottom-1/2 transform translate-y-1/2 w-full px-6 text-center text-white">

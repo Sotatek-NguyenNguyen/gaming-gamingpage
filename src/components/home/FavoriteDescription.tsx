@@ -23,11 +23,11 @@ const FavoriteDescription: FC<Props> = ({ game }) => {
   }, [game?.videoIntroURL]);
 
   return (
-    <div className="bg-primary-100 pt-10 pb-32">
+    <div className="bg-primary-100 pt-14 pb-32">
       <div className="text-white layout-container text-center">
-        <h1 className="text-5xl uppercase">{game?.name}</h1>
-        <div className="text-xl mt-20 max-w-5xl mx-auto">
-          <p>{game?.description}</p>
+        <h1 className="text-4xl font-bold uppercase">{game?.name}</h1>
+        <div className="mt-6 max-w-2xl mx-auto">
+          {game?.description && <p dangerouslySetInnerHTML={{ __html: game.description }} />}
           {/* <p>Axies are fierce creatures that love to battle, build and hunt for treasure!</p>
           <p className="mt-10">
             Build unstoppable teams of Axies and conquer your enemies! <br />
@@ -36,34 +36,40 @@ const FavoriteDescription: FC<Props> = ({ game }) => {
           </p> */}
         </div>
         <DepositButton />
-        <div className="mt-12">
+        <div className="mt-24">
           {game?.videoIntroURL && (
-            <>
-              {matchYoutubeUrl(game.videoIntroURL) && (
-                <img
-                  width={837}
-                  height={429}
-                  src={`https://img.youtube.com/vi/${matchYoutubeUrl(
-                    game.videoIntroURL,
-                  )}/maxresdefault.jpg`}
-                  alt="video"
-                  className={`mx-auto cursor-pointer ${showVideo ? 'hidden' : ''}`}
-                  onClick={() => {
-                    setShowVideo(true);
-                    setVideoUrl(`${videoUrl}?autoplay=1`);
-                  }}
-                />
+            <div className="overflow-hidden rounded-3xl w-max mx-auto">
+              {matchYoutubeUrl(game.videoIntroURL) ? (
+                <>
+                  <img
+                    width={837}
+                    height={429}
+                    src={`https://img.youtube.com/vi/${matchYoutubeUrl(
+                      game.videoIntroURL,
+                    )}/maxresdefault.jpg`}
+                    alt="video"
+                    className={`mx-auto cursor-pointer ${showVideo ? 'hidden' : ''}`}
+                    onClick={() => {
+                      setShowVideo(true);
+                      setVideoUrl(`${videoUrl}?autoplay=1`);
+                    }}
+                  />
+                  <iframe
+                    height={429}
+                    className={`mx-auto w-full lg:w-837px ${!showVideo ? 'hidden' : ''}`}
+                    src={videoUrl}
+                    title="YouTube video player"
+                    frameBorder={0}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </>
+              ) : (
+                <video width={837} height={429} className={`mx-auto w-full lg:w-837px`} controls>
+                  <source src={game.videoIntroURL} type="video/mp4" />
+                </video>
               )}
-              <iframe
-                height={429}
-                className={`mx-auto w-full lg:w-837px ${!showVideo ? 'hidden' : ''}`}
-                src={videoUrl}
-                title="YouTube video player"
-                frameBorder={0}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </>
+            </div>
           )}
         </div>
       </div>
