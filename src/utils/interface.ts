@@ -41,7 +41,7 @@ export interface UserDetailResponse {
 }
 
 export interface UserWithdrawResponse {
-  success: boolean;
+  serializedTx: string;
 }
 
 export interface UserTransaction {

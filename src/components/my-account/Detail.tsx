@@ -13,6 +13,7 @@ import { useGlobal, useAlert } from '../../hooks';
 import { IDL } from '../../utils/treasury';
 import * as spl from '@solana/spl-token';
 import { roundNumberByDecimal, renderTokenBalance } from '../../utils/helper';
+import { userWithdrawAction } from '../../api/user';
 
 interface Props {
   user?: UserDetailResponse;
@@ -124,10 +125,16 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const handleWithdraw = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
+        const handleWithdraw = async () => {
+          const response = await userWithdrawAction({ amount: 10 });
+          console.log(response);
+          onClose();
+        };
+
         return (
           <WithdrawModal
             onClose={onClose}
-            onConfirm={onClose}
+            onConfirm={handleWithdraw}
             confirmText="Withdraw"
             playerKey={base58}
             chargeLoading={chargeLoading}
