@@ -43,6 +43,8 @@ interface IPayloadWithSignature {
   signature: string;
 }
 
+export const expiredTime = 24 * 60 * 60 * 1000; // 1d
+
 const AuthContext = createContext<AuthState>(defaultState);
 
 export const AuthProvider: React.FC = ({ children }) => {
@@ -126,7 +128,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     return {
       address: address.toString(),
       iat: now,
-      exp: now + 24 * 60 * 60 * 1000,
+      exp: now + expiredTime,
     };
   }; */
 

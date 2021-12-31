@@ -55,6 +55,7 @@ export interface UserTransaction {
   note?: string;
   referenceId?: string;
   address?: string;
+  gameItemId: string;
 }
 
 export interface UserTransactionsResponse {

@@ -51,14 +51,14 @@ const InGameChangeTable: React.FC<Props> = ({
           </thead>
           <tbody className="text-primary-800">
             {data && data.length > 0 ? (
-              data.map(({ id, userAddress, createdAt }, idx) => (
+              data.map(({ id, gameItemId, userAddress, createdAt }, idx) => (
                 <tr
                   key={id}
                   className={`${
                     data.length - 1 !== idx ? 'border-b border-white border-opacity-15' : ''
                   }`}
                 >
-                  <td className="px-5 py-6 w-full truncate">{userAddress}</td>
+                  <td className="px-5 py-6 w-full truncate">{gameItemId}</td>
                   <td className="px-5 py-6">
                     <div className="mx-auto w-max">
                       <p className="uppercase font-bold">NFT</p>
