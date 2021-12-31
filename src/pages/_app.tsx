@@ -11,10 +11,10 @@ import { AuthProvider } from '../contexts/authContext';
 import 'nprogress/nprogress.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'react-toastify/dist/ReactToastify.css';
-import '../styles/globals.css';
-
 // Default styles that can be overridden by your app
-require('@solana/wallet-adapter-react-ui/styles.css');
+import '@solana/wallet-adapter-react-ui/styles.css';
+
+import '../styles/globals.css';
 
 NProgress.configure({ showSpinner: false });
 

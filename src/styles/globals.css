@@ -83,6 +83,39 @@ body {
   background: rgba(0, 0, 0, 0.4);
 }
 
+.wallet-adapter-modal-overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.wallet-adapter-modal-wrapper {
+  background: #200064;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.wallet-adapter-modal-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: normal;
+}
+
+.wallet-adapter-button {
+  background: transparent;
+  border: 1px solid #9f99b3;
+  border-radius: 32px;
+  color: #9f99b3;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.wallet-adapter-button:hover {
+  background: rgba(104, 35, 191, 0.2);
+  border: 1px solid #6823bf;
+  color: #fff;
+  font-weight: 600;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

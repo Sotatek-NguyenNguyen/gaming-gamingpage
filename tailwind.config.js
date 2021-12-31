@@ -93,6 +93,7 @@ module.exports = {
       backgroundImage: {
         'hero-banner': "url('/images/Sub-header.png')",
         'game-detail-banner': "url('/images/axie-banner.png')",
+        'my-account-banner': "url('/images/My-account.png')",
       },
       fontSize: {
         s16px: ['16px', '16px'],
