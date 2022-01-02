@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useRef } from 'react';
 import BaseModal from '../shared/BaseModal';
 
 interface Props {
@@ -18,11 +18,11 @@ const DepositModal: FC<Props> = ({
   chargeLoading,
   gameWallet,
 }) => {
-  const [depositValue, setDepositValue] = useState<number>(0);
+  const inputElement = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const handleSubmitDeposit = () => {
-    if (onConfirm && depositValue) {
-      onConfirm(depositValue);
+    if (onConfirm && inputElement.current.value) {
+      onConfirm(Number(inputElement.current.value));
     }
   };
 
@@ -54,8 +54,7 @@ const DepositModal: FC<Props> = ({
             <input
               type="number"
               className="bg-white rounded-full outline-none py-3 pl-7 pr-24 w-full"
-              defaultValue={depositValue ?? ''}
-              onChange={(e) => setDepositValue(Number(e.target.value))}
+              ref={inputElement}
             />
             <span className="flex justify-center items-center rounded-full px-4 font-semibold text-base absolute h-10 top-1/2 right-1 transform bg-primary-300 text-white -translate-y-1/2">
               Token

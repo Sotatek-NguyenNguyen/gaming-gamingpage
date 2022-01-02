@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import BaseModal from '../shared/BaseModal';
 
 interface Props {
   onClose?: () => void | Promise<void>;
-  onConfirm?: () => void | Promise<void>;
+  onConfirm?: (val: number) => void | Promise<void>;
   confirmText?: string;
   playerKey?: string;
   gameWallet?: string;
@@ -18,6 +18,14 @@ const WithdrawModal: FC<Props> = ({
   gameWallet,
   chargeLoading,
 }) => {
+  const inputElement = useRef() as React.MutableRefObject<HTMLInputElement>;
+
+  const handleWithDraw = () => {
+    if (onConfirm && inputElement.current.value) {
+      onConfirm(Number(inputElement.current.value));
+    }
+  };
+
   return (
     <BaseModal
       dense
@@ -45,6 +53,7 @@ const WithdrawModal: FC<Props> = ({
             <input
               type="number"
               className="bg-white rounded-full outline-none py-3 pl-7 pr-32 w-full"
+              ref={inputElement}
             />
             <span className="flex justify-center items-center rounded-full px-4 font-semibold text-base absolute h-10 top-1/2 right-1 transform bg-primary-300 text-white -translate-y-1/2">
               Token
@@ -53,7 +62,7 @@ const WithdrawModal: FC<Props> = ({
         </div>
       }
       onClose={onClose}
-      handleConfirm={onConfirm}
+      handleConfirm={handleWithDraw}
     />
   );
 };

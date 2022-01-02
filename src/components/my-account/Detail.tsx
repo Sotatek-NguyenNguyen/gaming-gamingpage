@@ -1,6 +1,13 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { Connection, clusterApiUrl, PublicKey, Commitment, ConfirmOptions } from '@solana/web3.js';
+import {
+  Connection,
+  clusterApiUrl,
+  PublicKey,
+  Commitment,
+  ConfirmOptions,
+  Transaction,
+} from '@solana/web3.js';
 import { Program, Provider, BN, web3 } from '@project-serum/anchor';
 import NavbarMenus from './NavbarMenus';
 import TransactionsTable from './TransactionsTable';
@@ -125,9 +132,27 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const handleWithdraw = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
-        const handleWithdraw = async () => {
-          const response = await userWithdrawAction({ amount: 10 });
-          console.log(response);
+        const handleWithdraw = async (amount: number) => {
+          const wallet = window.solana;
+          try {
+            const serverTx = await userWithdrawAction({ amount });
+            const network = clusterApiUrl('devnet');
+            const connection = new Connection(network, opts.preflightCommitment);
+            const provider = new Provider(connection, wallet, opts);
+            const program = new Program(IDL, new PublicKey(gameData.programId), provider);
+
+            const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
+            // console.log(program.provider.wallet);
+            userTx.partialSign(wallet.payer);
+            const signature = await web3.sendAndConfirmRawTransaction(
+              provider.connection,
+              userTx.serialize(),
+            );
+            console.log({ signature });
+          } catch (error) {
+            console.error(error);
+          }
+
           onClose();
         };
 

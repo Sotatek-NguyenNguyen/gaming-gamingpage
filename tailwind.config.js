@@ -47,6 +47,7 @@ module.exports = {
         pool_focus_1: '#6398FF',
       },
       width: {
+        '3.75rem': '3.75rem',
         '32rem': '32rem',
         '46-6rem': '46.6rem',
         '837px': '837px',
@@ -65,6 +66,7 @@ module.exports = {
         '350p': '350px',
         '418p': '418px',
         '600p': '600px',
+        '3.75rem': '3.75rem',
       },
       backgroundColor: {
         primary: {
@@ -76,7 +78,7 @@ module.exports = {
           600: '#624E8F',
           700: '#5523BF',
           800: '#9F99B3',
-          900: '#000000',
+          900: '#ffffff61',
         },
         secondary: {
           100: '#FFA803',
@@ -116,6 +118,7 @@ module.exports = {
       maxHeight: {
         '418p': '418px',
         '600p': '600px',
+        '90v': '90vh',
       },
       opacity: {
         15: '0.15',
