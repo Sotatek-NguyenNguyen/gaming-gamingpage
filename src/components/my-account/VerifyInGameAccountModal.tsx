@@ -43,8 +43,8 @@ const VerifyInGameAccountModal: FC<Props> = ({
     }
   }, [countDown, runTimer]);
 
-  const seconds = String(countDown % 60).padStart(2, 0);
-  const minutes = String(Math.floor(countDown / 60)).padStart(2, 0);
+  const seconds = String(countDown % 60).padStart(2, '0');
+  const minutes = String(Math.floor(countDown / 60)).padStart(2, '0');
 
   const handleConfirm = async () => {
     if (otpToken) {
