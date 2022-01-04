@@ -9,9 +9,12 @@ import {
   Transaction,
 } from '@solana/web3.js';
 import { Program, Provider, BN, web3 } from '@project-serum/anchor';
+import { confirmAlert } from 'react-confirm-alert';
+import * as spl from '@solana/spl-token';
+import * as bs58 from 'bs58';
+import clsx from 'clsx';
 import NavbarMenus from './NavbarMenus';
 import TransactionsTable from './TransactionsTable';
-import { confirmAlert } from 'react-confirm-alert';
 import DepositModal from './DepositModal';
 import WithdrawModal from './WithdrawModal';
 import MintNFTModal from './MintNFTModal';
@@ -19,11 +22,8 @@ import VerifyInGameAccountModal from './VerifyInGameAccountModal';
 import { UserDetailResponse } from '../../utils/interface';
 import { useGlobal, useAlert } from '../../hooks';
 import { IDL } from '../../utils/treasury';
-import * as spl from '@solana/spl-token';
 import { renderTokenBalance } from '../../utils/helper';
 import { userWithdrawAction } from '../../api/user';
-import * as bs58 from 'bs58';
-import clsx from 'clsx';
 
 interface Props {
   user?: UserDetailResponse;
@@ -210,16 +210,19 @@ const Detail: FC<Props> = ({ user, loading }) => {
           signature: Buffer.from(signatureOTP).toString('hex'),
         };
         const otpToken = bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
+
         confirmAlert({
           customUI: ({ onClose }) => {
             return (
               <VerifyInGameAccountModal
                 onClose={onClose}
-                onConfirm={onClose}
                 confirmText="Confirm"
-                chargeLoading={chargeLoading}
                 otpToken={otpToken}
                 logoUrl={gameData.logoURL}
+                expiredTime={expiredTime}
+                signMessage={signMessage}
+                createPayload={createPayload}
+                publicKey={publicKey}
               />
             );
           },
