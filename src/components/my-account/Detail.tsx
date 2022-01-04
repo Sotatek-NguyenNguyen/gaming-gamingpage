@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
-import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import {
   Connection,
   clusterApiUrl,
@@ -15,12 +15,15 @@ import { confirmAlert } from 'react-confirm-alert';
 import DepositModal from './DepositModal';
 import WithdrawModal from './WithdrawModal';
 import MintNFTModal from './MintNFTModal';
+import VerifyInGameAccountModal from './VerifyInGameAccountModal';
 import { UserDetailResponse } from '../../utils/interface';
 import { useGlobal, useAlert } from '../../hooks';
 import { IDL } from '../../utils/treasury';
 import * as spl from '@solana/spl-token';
-import { roundNumberByDecimal, renderTokenBalance } from '../../utils/helper';
+import { renderTokenBalance } from '../../utils/helper';
 import { userWithdrawAction } from '../../api/user';
+import * as bs58 from 'bs58';
+import clsx from 'clsx';
 
 interface Props {
   user?: UserDetailResponse;
@@ -34,9 +37,10 @@ declare global {
 }
 
 const treasuryPDASeed = Buffer.from('treasury');
+export const expiredTime = 600; // 10 min
 
 const Detail: FC<Props> = ({ user, loading }) => {
-  const { publicKey, signTransaction } = useWallet();
+  const { publicKey, signTransaction, signMessage } = useWallet();
   // const { connection } = useConnection();
   const { gameData } = useGlobal();
   const { alertError, alertSuccess } = useAlert();
@@ -54,6 +58,15 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const network = clusterApiUrl('devnet');
   const connection = new Connection(network, opts.preflightCommitment);
   const provider = new Provider(connection, wallet, opts);
+
+  const createPayload = (address: PublicKey) => {
+    const now = new Date().getTime();
+    return {
+      address: address.toString(),
+      // iat: now,
+      exp: now + expiredTime,
+    };
+  };
 
   const handleDeposit = () => {
     confirmAlert({
@@ -187,6 +200,36 @@ const Detail: FC<Props> = ({ user, loading }) => {
     });
   };
 
+  const handleVerifyInGameAccount = async () => {
+    if (publicKey && signMessage) {
+      try {
+        const payload = createPayload(publicKey);
+        const signatureOTP = await signMessage(Buffer.from(JSON.stringify(payload)));
+        const signedOTPData = {
+          ...payload,
+          signature: Buffer.from(signatureOTP).toString('hex'),
+        };
+        const otpToken = bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
+        confirmAlert({
+          customUI: ({ onClose }) => {
+            return (
+              <VerifyInGameAccountModal
+                onClose={onClose}
+                onConfirm={onClose}
+                confirmText="Confirm"
+                chargeLoading={chargeLoading}
+                otpToken={otpToken}
+                logoUrl={gameData.logoURL}
+              />
+            );
+          },
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <div className="bg-primary-100">
       <div className="layout-container pt-12 pb-14">
@@ -233,20 +276,34 @@ const Detail: FC<Props> = ({ user, loading }) => {
           </div>
           <div className="text-white bg-primary-200 py-7 mt-6 md:mt-0 px-12 rounded-2xl md:w-96 flex flex-col items-center justify-between">
             <button
-              className="w-60 p-2 h-12 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
-              onClick={handleDeposit}
+              className={clsx(
+                'w-60 p-2 h-12 font-semibold overflow-hidden text-lg text-white rounded-full transition-all',
+                {
+                  'bg-primary-300 hover:bg-primary-100': user && user.accountInGameId,
+                  'bg-primary-800': user && !user.accountInGameId,
+                },
+              )}
+              onClick={user && user.accountInGameId ? handleDeposit : () => {}}
+              disabled={user && user.accountInGameId ? true : false}
             >
               Deposit
             </button>
             <button
               className="w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
-              onClick={handleWithdraw}
+              onClick={user && user.accountInGameId ? handleWithdraw : handleVerifyInGameAccount}
             >
-              Withdraw
+              {user && user.accountInGameId ? 'Withdraw' : 'Verify wallet with OTP'}
             </button>
             <button
-              className="w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
-              onClick={handleMintNFT}
+              className={clsx(
+                'w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full transition-all',
+                {
+                  'bg-primary-300 hover:bg-primary-100': user && user.accountInGameId,
+                  'bg-primary-800': user && !user.accountInGameId,
+                },
+              )}
+              onClick={user && user.accountInGameId ? handleMintNFT : () => {}}
+              disabled={user && user.accountInGameId ? true : false}
             >
               Request Mint NFT
             </button>
@@ -254,7 +311,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
         </div>
         <div className="mt-6 text-white">
           <NavbarMenus />
-          <TransactionsTable />
+          <TransactionsTable verifiedInGameAccount={user && user.accountInGameId ? true : false} />
         </div>
       </div>
     </div>

@@ -43,7 +43,7 @@ interface IPayloadWithSignature {
   signature: string;
 }
 
-export const expiredTime = 24 * 60 * 60 * 1000; // 1d
+export const expiredTime = 600; // 10 min
 
 const AuthContext = createContext<AuthState>(defaultState);
 
@@ -123,14 +123,14 @@ export const AuthProvider: React.FC = ({ children }) => {
     setCluster(newCluster);
   };
 
-  /* const createPayload = (address: PublicKey) => {
+  const createPayload = (address: PublicKey) => {
     const now = new Date().getTime();
     return {
       address: address.toString(),
       iat: now,
       exp: now + expiredTime,
     };
-  }; */
+  };
 
   const login = async (
     walletAddress: PublicKey,
@@ -141,7 +141,6 @@ export const AuthProvider: React.FC = ({ children }) => {
       let token;
       if (signMessage) {
         /* token = await createTokenWithSignMessageFunc(signMessage!, walletAddress); */
-        // const payload = createPayload(walletAddress);
 
         const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
         const encodedMessage = new TextEncoder().encode(signatureMsg?.signatureMsg);
@@ -151,6 +150,16 @@ export const AuthProvider: React.FC = ({ children }) => {
           signature: Buffer.from(signature),
         });
         token = tokenResponse.accessToken;
+
+        // handle sign OTP
+        /* const payload = createPayload(walletAddress);
+        const signatureOTP = await signMessage(Buffer.from(JSON.stringify(payload)));
+        const signedOTPData = {
+          ...payload,
+          signature: Buffer.from(signatureOTP).toString('hex'),
+        };
+        const otpToken = bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
+        console.log(otpToken); */
       } else {
         /* token = await createTokenWithWalletAdapter(adapter._wallet); */
         const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });

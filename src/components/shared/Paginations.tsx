@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import { getListPageFromTotalPage } from '../../utils/helper';
 
 interface Props {
-  totalPages: number;
-  currentPage: number;
+  totalPages?: number;
+  currentPage?: number;
   hasNext: boolean;
   hasPrevious: boolean;
   handleGoNext: () => void;
@@ -21,7 +21,7 @@ const Paginations: React.FC<Props> = ({
   handleGoPrevious,
   handleGoToPage,
 }) => {
-  if (totalPages === 1) {
+  if (!totalPages || totalPages === 1) {
     return null;
   }
 

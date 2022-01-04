@@ -5,12 +5,13 @@ import moment from 'moment';
 import clsx from 'clsx';
 
 interface Props {
-  paginatedTransaction: UserTransactionsResponse;
+  paginatedTransaction?: UserTransactionsResponse | null;
   hasNext: boolean;
   hasPrevious: boolean;
   movePage: (page: number) => Promise<void>;
   nextPage: () => Promise<void>;
   previousPage: () => Promise<void>;
+  verifiedInGameAccount: boolean;
 }
 
 const TransactionTable: React.FC<Props> = ({
@@ -20,8 +21,9 @@ const TransactionTable: React.FC<Props> = ({
   movePage,
   nextPage,
   previousPage,
+  verifiedInGameAccount,
 }) => {
-  const { data, page, /* pageSize, total, */ totalPage } = paginatedTransaction;
+  const { data, page, /* pageSize, total, */ totalPage } = paginatedTransaction || {};
   const handleMove = async (page: number) => {
     await movePage(page);
   };
@@ -66,7 +68,15 @@ const TransactionTable: React.FC<Props> = ({
             </tr>
           </thead>
           <tbody className="text-primary-800">
-            {data && data.length > 0 ? (
+            {!verifiedInGameAccount ? (
+              <>
+                <tr>
+                  <td className="py-10 text-base text-white text-center" colSpan={6}>
+                    Wallet verification is required to view associated transaction history
+                  </td>
+                </tr>
+              </>
+            ) : data && data.length > 0 ? (
               data.map(({ id, transactionId, amount, createdAt, type, note }, idx) => (
                 <tr
                   key={id}
@@ -97,15 +107,17 @@ const TransactionTable: React.FC<Props> = ({
           </tbody>
         </table>
       </div>
-      <Paginations
-        totalPages={totalPage}
-        currentPage={page}
-        hasNext={hasNext}
-        hasPrevious={hasPrevious}
-        handleGoNext={handleNext}
-        handleGoPrevious={handlePrevious}
-        handleGoToPage={handleMove}
-      />
+      {verifiedInGameAccount && (
+        <Paginations
+          totalPages={totalPage}
+          currentPage={page}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          handleGoNext={handleNext}
+          handleGoPrevious={handlePrevious}
+          handleGoToPage={handleMove}
+        />
+      )}
     </>
   );
 };

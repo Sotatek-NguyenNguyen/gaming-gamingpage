@@ -4,7 +4,11 @@ import { useDataTable } from '../../hooks';
 import TransactionTable from './TransactionTable';
 import InGameChangeTable from './InGameChangeTable';
 
-const TransactionsTable: FC = ({}) => {
+interface Props {
+  verifiedInGameAccount: boolean;
+}
+
+const TransactionsTable: FC<Props> = ({ verifiedInGameAccount }) => {
   const {
     tabActive,
     hasNext,
@@ -14,7 +18,7 @@ const TransactionsTable: FC = ({}) => {
     movePage,
     nextPage,
     previousPage,
-  } = useDataTable();
+  } = useDataTable(verifiedInGameAccount);
 
   return (
     <div className="relative w-full mt-7">
@@ -23,27 +27,27 @@ const TransactionsTable: FC = ({}) => {
           <Spinner variant="alt" size="medium" />
         </div>
       )}
-      {currPaginated ? (
-        tabActive ? (
-          <InGameChangeTable
-            paginatedTransaction={currPaginated}
-            hasNext={hasNext}
-            hasPrevious={hasPrevious}
-            movePage={movePage}
-            nextPage={nextPage}
-            previousPage={previousPage}
-          />
-        ) : (
-          <TransactionTable
-            paginatedTransaction={currPaginated}
-            hasNext={hasNext}
-            hasPrevious={hasPrevious}
-            movePage={movePage}
-            nextPage={nextPage}
-            previousPage={previousPage}
-          />
-        )
-      ) : null}
+      {tabActive ? (
+        <InGameChangeTable
+          paginatedTransaction={currPaginated}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          movePage={movePage}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          verifiedInGameAccount={verifiedInGameAccount}
+        />
+      ) : (
+        <TransactionTable
+          paginatedTransaction={currPaginated}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          movePage={movePage}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          verifiedInGameAccount={verifiedInGameAccount}
+        />
+      )}
     </div>
   );
 };
