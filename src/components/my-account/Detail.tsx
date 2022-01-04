@@ -131,51 +131,30 @@ const Detail: FC<Props> = ({ user, loading }) => {
     });
   };
 
-  const createTransferTransaction = async (num: number) => {
-    if (!publicKey) return;
-    const transaction = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: publicKey,
-        toPubkey: publicKey,
-        lamports: num,
-      }),
-    );
-    transaction.feePayer = publicKey;
-    const anyTransaction: any = transaction;
-    anyTransaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-    return transaction;
-  };
-
   const handleWithdraw = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
         const handleWithdraw = async (amount: number) => {
           if (signTransaction) {
+            setChargeLoading(true);
             try {
               const serverTx = await userWithdrawAction({ amount });
 
-              const program = new Program(IDL, new PublicKey(gameData.programId), provider);
-              const transaction = await createTransferTransaction(amount);
-              if (!transaction) return;
-              const signed = await signTransaction(transaction);
-
-              /* const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
-            console.log(userTx); */
+              const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
+              const signed = await signTransaction(userTx);
               const signature = await connection.sendRawTransaction(signed.serialize());
               await connection.confirmTransaction(signature);
-              // console.log(program.provider.wallet);
-              // userTx.partialSign(wallet.payer);
-              /* const signature = await web3.sendAndConfirmRawTransaction(
-              provider.connection,
-              userTx.serialize(),
-            ); */
+              alertSuccess('Withdraw successfully');
               console.log({ signature });
             } catch (error) {
               console.error(error);
+              setChargeLoading(false);
+              onClose();
+              alertError('Transaction Canceled');
             }
+            setChargeLoading(false);
+            onClose();
           }
-
-          onClose();
         };
 
         return (
