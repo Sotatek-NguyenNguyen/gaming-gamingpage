@@ -2,7 +2,6 @@ import React from 'react';
 import { UserTransactionsResponse } from './../../utils/interface';
 import Paginations from '../shared/Paginations';
 import moment from 'moment';
-import clsx from 'clsx';
 
 interface Props {
   paginatedTransaction?: UserTransactionsResponse | null;
@@ -43,8 +42,10 @@ const TransactionTable: React.FC<Props> = ({
       case 'deposit':
         return 'bg-tx_status-200';
       case 'deducted':
+      case 'admin_deduct':
         return 'bg-tx_status-300';
       case 'granted':
+      case 'admin_grant':
         return 'bg-tx_status-400';
       case 'minted':
         return 'bg-tx_status-500';
@@ -52,6 +53,19 @@ const TransactionTable: React.FC<Props> = ({
         return 'bg-white';
     }
     return '';
+  };
+
+  const statusText = (status: string) => {
+    switch (status) {
+      case 'admin_deduct':
+        return 'Deducted';
+
+      case 'admin_grant':
+        return 'Granted';
+
+      default:
+        return status;
+    }
   };
 
   return (
@@ -69,13 +83,11 @@ const TransactionTable: React.FC<Props> = ({
           </thead>
           <tbody className="text-primary-800">
             {!verifiedInGameAccount ? (
-              <>
-                <tr>
-                  <td className="py-10 text-base text-white text-center" colSpan={6}>
-                    Wallet verification is required to view associated transaction history
-                  </td>
-                </tr>
-              </>
+              <tr>
+                <td className="py-10 text-base text-white text-center" colSpan={6}>
+                  Wallet verification is required to view associated transaction history
+                </td>
+              </tr>
             ) : data && data.length > 0 ? (
               data.map(({ id, transactionId, amount, createdAt, type, note }, idx) => (
                 <tr
@@ -96,7 +108,7 @@ const TransactionTable: React.FC<Props> = ({
                         type,
                       )}`}
                     >
-                      {type}
+                      {statusText(type)}
                     </span>
                   </td>
                 </tr>

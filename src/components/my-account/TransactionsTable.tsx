@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import Spinner from '../shared/Spinner';
 import { useDataTable } from '../../hooks';
 import TransactionTable from './TransactionTable';
-import InGameChangeTable from './InGameChangeTable';
+import AssetsTable from './AssetsTable';
 
 interface Props {
   verifiedInGameAccount: boolean;
@@ -28,7 +28,7 @@ const TransactionsTable: FC<Props> = ({ verifiedInGameAccount }) => {
         </div>
       )}
       {tabActive ? (
-        <InGameChangeTable
+        <AssetsTable
           paginatedTransaction={currPaginated}
           hasNext={hasNext}
           hasPrevious={hasPrevious}

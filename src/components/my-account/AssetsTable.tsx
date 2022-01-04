@@ -14,7 +14,7 @@ interface Props {
   verifiedInGameAccount: boolean;
 }
 
-const InGameChangeTable: React.FC<Props> = ({
+const AssetsTable: React.FC<Props> = ({
   paginatedTransaction,
   hasNext,
   hasPrevious,
@@ -53,13 +53,11 @@ const InGameChangeTable: React.FC<Props> = ({
           </thead>
           <tbody className="text-primary-800">
             {!verifiedInGameAccount ? (
-              <>
-                <tr>
-                  <td className="py-10 text-base text-white text-center" colSpan={6}>
-                    Wallet verification is required to view associated transaction history
-                  </td>
-                </tr>
-              </>
+              <tr>
+                <td className="py-10 text-base text-white text-center" colSpan={6}>
+                  Wallet verification is required to view associated transaction history
+                </td>
+              </tr>
             ) : data && data.length > 0 ? (
               data.map(({ id, gameItemId, userAddress, createdAt }, idx) => (
                 <tr
@@ -108,4 +106,4 @@ const InGameChangeTable: React.FC<Props> = ({
   );
 };
 
-export default InGameChangeTable;
+export default AssetsTable;
