@@ -36,7 +36,7 @@ declare global {
 const treasuryPDASeed = Buffer.from('treasury');
 
 const Detail: FC<Props> = ({ user, loading }) => {
-  const { publicKey } = useWallet();
+  const { publicKey, signTransaction } = useWallet();
   // const { connection } = useConnection();
   const { gameData } = useGlobal();
   const { alertError, alertSuccess } = useAlert();
@@ -49,6 +49,11 @@ const Detail: FC<Props> = ({ user, loading }) => {
   };
 
   const { SystemProgram } = web3;
+  const wallet = window.solana;
+
+  const network = clusterApiUrl('devnet');
+  const connection = new Connection(network, opts.preflightCommitment);
+  const provider = new Provider(connection, wallet, opts);
 
   const handleDeposit = () => {
     confirmAlert({
@@ -60,9 +65,6 @@ const Detail: FC<Props> = ({ user, loading }) => {
             const gameId = new PublicKey(gameData.gameId);
             setChargeLoading(true);
             try {
-              const network = clusterApiUrl('devnet');
-              const connection = new Connection(network, opts.preflightCommitment);
-              const provider = new Provider(connection, wallet, opts);
               const program = new Program(IDL, new PublicKey(gameData.programId), provider);
 
               // token for deposit and withdraw
@@ -129,28 +131,48 @@ const Detail: FC<Props> = ({ user, loading }) => {
     });
   };
 
+  const createTransferTransaction = async (num: number) => {
+    if (!publicKey) return;
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: publicKey,
+        toPubkey: publicKey,
+        lamports: num,
+      }),
+    );
+    transaction.feePayer = publicKey;
+    const anyTransaction: any = transaction;
+    anyTransaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
+    return transaction;
+  };
+
   const handleWithdraw = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
         const handleWithdraw = async (amount: number) => {
-          const wallet = window.solana;
-          try {
-            const serverTx = await userWithdrawAction({ amount });
-            const network = clusterApiUrl('devnet');
-            const connection = new Connection(network, opts.preflightCommitment);
-            const provider = new Provider(connection, wallet, opts);
-            const program = new Program(IDL, new PublicKey(gameData.programId), provider);
+          if (signTransaction) {
+            try {
+              const serverTx = await userWithdrawAction({ amount });
 
-            const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
-            // console.log(program.provider.wallet);
-            userTx.partialSign(wallet.payer);
-            const signature = await web3.sendAndConfirmRawTransaction(
+              const program = new Program(IDL, new PublicKey(gameData.programId), provider);
+              const transaction = await createTransferTransaction(amount);
+              if (!transaction) return;
+              const signed = await signTransaction(transaction);
+
+              /* const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
+            console.log(userTx); */
+              const signature = await connection.sendRawTransaction(signed.serialize());
+              await connection.confirmTransaction(signature);
+              // console.log(program.provider.wallet);
+              // userTx.partialSign(wallet.payer);
+              /* const signature = await web3.sendAndConfirmRawTransaction(
               provider.connection,
               userTx.serialize(),
-            );
-            console.log({ signature });
-          } catch (error) {
-            console.error(error);
+            ); */
+              console.log({ signature });
+            } catch (error) {
+              console.error(error);
+            }
           }
 
           onClose();
