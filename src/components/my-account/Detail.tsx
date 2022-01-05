@@ -37,7 +37,7 @@ declare global {
 }
 
 const treasuryPDASeed = Buffer.from('treasury');
-export const expiredTime = 600; // 10 min
+export const expiredTime = 600000; // 10 mins
 
 const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey, signTransaction, signMessage } = useWallet();
@@ -205,11 +205,11 @@ const Detail: FC<Props> = ({ user, loading }) => {
       try {
         const payload = createPayload(publicKey);
         const signatureOTP = await signMessage(Buffer.from(JSON.stringify(payload)));
-        /* const signedOTPData = {
+        const signedOTPData = {
           ...payload,
           signature: Buffer.from(signatureOTP).toString('hex'),
-        }; */
-        const otpToken = Buffer.from(signatureOTP).toString('hex'); // bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
+        };
+        const otpToken = bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
 
         confirmAlert({
           customUI: ({ onClose }) => {
