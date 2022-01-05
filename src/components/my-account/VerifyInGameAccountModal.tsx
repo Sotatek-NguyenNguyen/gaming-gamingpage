@@ -25,7 +25,7 @@ const VerifyInGameAccountModal: FC<Props> = ({
   signMessage,
   publicKey,
 }) => {
-  const [countDown, setCountDown] = useState<number>(expiredTime);
+  const [countDown, setCountDown] = useState<number>(600); // 600s = 10mins
   const [runTimer, setRunTimer] = useState<boolean>(true);
   const [otpCode, setOtpCode] = useState<string>(otpToken);
   const { alertInfo } = useAlert();
