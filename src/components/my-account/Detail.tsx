@@ -205,11 +205,11 @@ const Detail: FC<Props> = ({ user, loading }) => {
       try {
         const payload = createPayload(publicKey);
         const signatureOTP = await signMessage(Buffer.from(JSON.stringify(payload)));
-        const signedOTPData = {
+        /* const signedOTPData = {
           ...payload,
           signature: Buffer.from(signatureOTP).toString('hex'),
-        };
-        const otpToken = bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
+        }; */
+        const otpToken = Buffer.from(signatureOTP).toString('hex'); // bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
 
         confirmAlert({
           customUI: ({ onClose }) => {

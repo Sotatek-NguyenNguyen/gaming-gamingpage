@@ -58,11 +58,12 @@ const VerifyInGameAccountModal: FC<Props> = ({
     try {
       const payloadGenerate = createPayload(publicKey);
       const signatureOTPGenerate = await signMessage(Buffer.from(JSON.stringify(payloadGenerate)));
-      const signedOTPDataGenerate = {
+      /* const signedOTPDataGenerate = {
         ...payloadGenerate,
         signature: Buffer.from(signatureOTPGenerate).toString('hex'),
-      };
-      setOtpCode(bs58.encode(Buffer.from(JSON.stringify(signedOTPDataGenerate))));
+      }; */
+      // setOtpCode(bs58.encode(Buffer.from(JSON.stringify(signedOTPDataGenerate))));
+      setOtpCode(Buffer.from(signatureOTPGenerate).toString('hex'));
       setRunTimer(true);
       setCountDown(expiredTime);
     } catch (error) {
