@@ -46,7 +46,7 @@ export const useDataTable = (verifiedInGameAccount: boolean) => {
       await getDataBySection({ page: 1, pageSize: PAGE_SIZE });
     };
     init();
-  }, [tabActive]);
+  }, [tabActive, verifiedInGameAccount]);
 
   const movePage = async (page: number): Promise<void> => {
     getDataBySection({ page, pageSize: PAGE_SIZE });
