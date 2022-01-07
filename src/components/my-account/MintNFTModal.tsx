@@ -37,10 +37,8 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
   useEffect(() => {
     if (mintingState >= 7 && runTimer) {
       setRunTimer(false);
-      // setCountDown(0);
     }
   }, [mintingState, runTimer]);
-  console.log(mintingState);
 
   const handleCheckAvailability = async () => {
     try {
@@ -76,6 +74,11 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
           await connection.confirmTransaction(signature);
           console.log(signature);
           setMintingState(8);
+          if (onClose) {
+            setTimeout(() => {
+              onClose();
+            }, 3000);
+          }
         }
       }
     } catch (error) {
@@ -84,7 +87,6 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
     }
     setLoading(false);
   };
-  console.log(mintingState);
   return (
     <div
       className={`relative flex flex-col items-center w-full overflow-x-hidden overflow-y-auto max-h-90v rounded-2xl p-10 shadow-lg bg-primary-100 md:w-32rem`}

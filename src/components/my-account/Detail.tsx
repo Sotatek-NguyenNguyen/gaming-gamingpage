@@ -305,7 +305,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
                   'bg-primary-800': !isAccountVerified,
                 },
               )}
-              onClick={/* isAccountVerified ? */ handleMintNFT /* : () => {} */}
+              onClick={isAccountVerified ? handleMintNFT : () => {}}
               disabled={isAccountVerified ? true : false}
             >
               Request Mint NFT
