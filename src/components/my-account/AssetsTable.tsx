@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { UserTransactionsResponse } from '../../utils/interface';
 import Paginations from '../shared/Paginations';
 import moment from 'moment';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 interface Props {
   paginatedTransaction?: UserTransactionsResponse | null;
@@ -23,9 +22,6 @@ const AssetsTable: React.FC<Props> = ({
   previousPage,
   verifiedInGameAccount,
 }) => {
-  const { publicKey } = useWallet();
-  const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
-
   const { data, page, /* pageSize, total, */ totalPage } = paginatedTransaction || {};
   const handleMove = async (page: number) => {
     await movePage(page);
@@ -37,6 +33,28 @@ const AssetsTable: React.FC<Props> = ({
 
   const handlePrevious = async () => {
     await previousPage();
+  };
+
+  const statusColor = (status: string) => {
+    switch (status) {
+      case 'Minted':
+        return 'bg-tx_status-100';
+      case 'MetadataUploading':
+        return 'bg-tx_status-200';
+      case 'Minting':
+        return 'bg-tx_status-500';
+    }
+    return '';
+  };
+
+  const statusText = (status: string) => {
+    switch (status) {
+      case 'MetadataUploading':
+        return 'Metadata Uploading';
+
+      default:
+        return status;
+    }
   };
 
   return (
@@ -59,7 +77,7 @@ const AssetsTable: React.FC<Props> = ({
                 </td>
               </tr>
             ) : data && data.length > 0 ? (
-              data.map(({ id, gameItemId, userAddress, createdAt }, idx) => (
+              data.map(({ id, gameItemId, createdAt, status, gameItemName }, idx) => (
                 <tr
                   key={id}
                   className={`${
@@ -68,20 +86,26 @@ const AssetsTable: React.FC<Props> = ({
                 >
                   <td className="px-5 py-6 w-full truncate">{gameItemId}</td>
                   <td className="px-5 py-6">
-                    <div className="mx-auto w-max">
-                      <p className="uppercase font-bold">NFT</p>
-                      <p>Happy Bunny</p>
-                    </div>
+                    {gameItemName && (
+                      <div className="w-max">
+                        <p className="uppercase font-bold">NFT</p>
+                        <p>{gameItemName}</p>
+                      </div>
+                    )}
                   </td>
                   <td className="px-5 py-6">
                     {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}
                   </td>
-                  <td
-                    className={`px-5 py-6 uppercase ${
-                      base58 === userAddress ? 'text-tx_status-400' : 'text-tx_status-600'
-                    }`}
-                  >
-                    {base58 === userAddress ? 'minted' : 'minted by other'}
+                  <td className={`px-5 py-6 capitalize`}>
+                    {status && (
+                      <span
+                        className={`text-white py-2 px-4 rounded-full font-semibold text-base ${statusColor(
+                          status,
+                        )}`}
+                      >
+                        {statusText(status)}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))

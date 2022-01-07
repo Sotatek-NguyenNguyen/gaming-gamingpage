@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { userMintNFTArweaveUploadAction, userMintNFTAction } from '../../api/user';
 import { Connection, Transaction } from '@solana/web3.js';
 import { UserMintNFTArweaveUploadResponse } from '../../utils/interface';
+import { renderTokenBalance } from '../../utils/helper';
 // import Spinner from '../shared/Spinner';
 
 interface Props {
@@ -324,13 +325,13 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                     defaultValue={arweaveUploaded?.metadata?.name}
                     readOnly
                   />
-                  <div className="mt-5 text-primary-800">Symbol:</div>
+                  {/* <div className="mt-5 text-primary-800">Symbol:</div>
                   <input
                     type="text"
                     className="bg-primary-800 mt-2 bg-opacity-50 rounded-full outline-none text-white truncate py-3 px-7 w-full"
                     defaultValue=""
                     readOnly
-                  />
+                  /> */}
                   {arweaveUploaded?.metadata?.description && (
                     <>
                       <div className="mt-5 text-primary-800">Description:</div>
@@ -364,10 +365,16 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                   <input
                     type="text"
                     className="bg-primary-800 mt-2 bg-opacity-50 rounded-full outline-none text-white truncate py-3 px-7 w-full"
-                    defaultValue="0 - 100%"
+                    defaultValue={renderTokenBalance(
+                      arweaveUploaded?.metadata?.royaltiesPercentage,
+                      2,
+                    )}
                     readOnly
                   />
-                  <div className="mt-5 text-primary-800">Cost to Create: $2</div>
+                  <div className="mt-5 text-primary-800">
+                    Cost to Create: $
+                    {renderTokenBalance(arweaveUploaded?.metadata?.costToCreate, 2)}
+                  </div>
                 </>
               )}
             </div>

@@ -56,6 +56,8 @@ export interface UserTransaction {
   referenceId?: string;
   address?: string;
   gameItemId: string;
+  status?: string;
+  gameItemName?: string;
 }
 
 export interface UserTransactionsResponse {
@@ -86,6 +88,8 @@ interface ArweaveMetaData {
   gameItemId: string;
   image: string;
   description: string;
+  royaltiesPercentage: number;
+  costToCreate: number;
   attributes: ArweaveMetaDataAttribute[];
 }
 

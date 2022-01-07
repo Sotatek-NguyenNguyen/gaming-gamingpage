@@ -287,7 +287,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
                 },
               )}
               onClick={isAccountVerified ? handleDeposit : () => {}}
-              disabled={isAccountVerified ? true : false}
+              disabled={!isAccountVerified ? true : false}
             >
               Deposit
             </button>
@@ -306,7 +306,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
                 },
               )}
               onClick={isAccountVerified ? handleMintNFT : () => {}}
-              disabled={isAccountVerified ? true : false}
+              disabled={!isAccountVerified ? true : false}
             >
               Request Mint NFT
             </button>
