@@ -66,7 +66,7 @@ const AssetsTable: React.FC<Props> = ({
               <th className="w-1/4 px-5 py-5 text-left font-semibold">Item ID</th>
               <th className="w-1/4 px-5 py-5 font-semibold">Item Name</th>
               <th className="w-1/4 px-5 py-5 font-semibold">Added on</th>
-              <th className="w-1/4 px-5 py-5 font-semibold">Status</th>
+              <th className="w-1/6 px-2 py-5 font-semibold">Status</th>
             </tr>
           </thead>
           <tbody className="text-primary-800">
@@ -96,7 +96,7 @@ const AssetsTable: React.FC<Props> = ({
                   <td className="px-5 py-6">
                     {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}
                   </td>
-                  <td className={`px-5 py-6 capitalize`}>
+                  <td className={`px-2 py-6 capitalize`}>
                     {status && (
                       <span
                         className={`text-white py-2 px-4 rounded-full font-semibold text-base ${statusColor(

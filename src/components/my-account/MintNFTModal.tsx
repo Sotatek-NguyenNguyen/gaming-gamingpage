@@ -88,6 +88,7 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
     }
     setLoading(false);
   };
+
   return (
     <div
       className={`relative flex flex-col items-center w-full overflow-x-hidden overflow-y-auto max-h-90v rounded-2xl p-10 shadow-lg bg-primary-100 md:w-32rem`}
@@ -146,12 +147,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 1 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 1 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 1 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">
@@ -165,12 +174,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 2 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 2 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 2 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">
@@ -184,12 +201,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 3 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 3 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 3 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">
@@ -203,12 +228,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 4 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 4 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 4 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">
@@ -222,12 +255,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 5 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 5 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 5 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">
@@ -241,12 +282,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 6 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 6 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 6 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">
@@ -260,12 +309,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 7 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 7 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 7 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">
@@ -279,12 +336,20 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                 <div className="col-start-1 col-end-3 mr-10 md:mx-auto relative">
                   {mintingState >= 8 ? (
                     <>
-                      <div className="h-full w-7 flex items-center justify-center">
+                      <div
+                        className={`h-full w-${
+                          mintingState === 8 ? '7' : '4'
+                        } flex items-center justify-center`}
+                      >
                         <div className="h-full w-1 bg-primary-300 pointer-events-none" />
                       </div>
-                      <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
-                        <div className="w-4 h-4 bg-primary-300 rounded-full" />
-                      </div>
+                      {mintingState === 8 ? (
+                        <div className="w-7 h-7 absolute -bottom-1 rounded-full bg-primary-300 bg-opacity-40 shadow text-center flex justify-center items-center">
+                          <div className="w-4 h-4 bg-primary-300 rounded-full" />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 absolute bottom-0.5 -mt-2 rounded-full bg-primary-300 shadow text-center" />
+                      )}
                     </>
                   ) : (
                     <div className="h-full w-4 flex items-center justify-center">

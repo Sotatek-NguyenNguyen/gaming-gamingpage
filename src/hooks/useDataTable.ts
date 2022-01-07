@@ -59,7 +59,7 @@ export const useDataTable = (verifiedInGameAccount: boolean) => {
   };
 
   const previousPage = async (): Promise<void> => {
-    if (currPaginated && hasNext) {
+    if (currPaginated && hasPrevious) {
       getDataBySection({ page: currPaginated.page - 1, pageSize: PAGE_SIZE });
     }
   };

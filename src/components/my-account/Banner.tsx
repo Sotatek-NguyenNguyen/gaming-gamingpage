@@ -1,5 +1,5 @@
 import React from 'react';
-import MyAccountText from './../shared/icons/MyAccountText';
+// import MyAccountText from './../shared/icons/MyAccountText';
 
 const Banner: React.FC = () => {
   return (
