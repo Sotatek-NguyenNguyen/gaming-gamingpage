@@ -2,9 +2,13 @@ import React, { FC } from 'react';
 import Spinner from '../shared/Spinner';
 import { useDataTable } from '../../hooks';
 import TransactionTable from './TransactionTable';
-import InGameChangeTable from './InGameChangeTable';
+import AssetsTable from './AssetsTable';
 
-const TransactionsTable: FC = ({}) => {
+interface Props {
+  verifiedInGameAccount: boolean;
+}
+
+const TransactionsTable: FC<Props> = ({ verifiedInGameAccount }) => {
   const {
     tabActive,
     hasNext,
@@ -14,36 +18,36 @@ const TransactionsTable: FC = ({}) => {
     movePage,
     nextPage,
     previousPage,
-  } = useDataTable();
+  } = useDataTable(verifiedInGameAccount);
 
   return (
-    <div className="relative w-full overflow-hidden rounded-r-xl rounded-bl-xl bg-primary-100">
+    <div className="relative w-full mt-7">
       {loading && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-black bg-opacity-30">
           <Spinner variant="alt" size="medium" />
         </div>
       )}
-      {currPaginated ? (
-        tabActive ? (
-          <InGameChangeTable
-            paginatedTransaction={currPaginated}
-            hasNext={hasNext}
-            hasPrevious={hasPrevious}
-            movePage={movePage}
-            nextPage={nextPage}
-            previousPage={previousPage}
-          />
-        ) : (
-          <TransactionTable
-            paginatedTransaction={currPaginated}
-            hasNext={hasNext}
-            hasPrevious={hasPrevious}
-            movePage={movePage}
-            nextPage={nextPage}
-            previousPage={previousPage}
-          />
-        )
-      ) : null}
+      {tabActive ? (
+        <AssetsTable
+          paginatedTransaction={currPaginated}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          movePage={movePage}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          verifiedInGameAccount={verifiedInGameAccount}
+        />
+      ) : (
+        <TransactionTable
+          paginatedTransaction={currPaginated}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          movePage={movePage}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          verifiedInGameAccount={verifiedInGameAccount}
+        />
+      )}
     </div>
   );
 };

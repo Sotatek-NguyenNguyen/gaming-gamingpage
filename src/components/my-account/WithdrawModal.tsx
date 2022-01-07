@@ -1,11 +1,12 @@
-import { FC } from 'react';
+import { FC, useRef } from 'react';
 import BaseModal from '../shared/BaseModal';
 
 interface Props {
   onClose?: () => void | Promise<void>;
-  onConfirm?: () => void | Promise<void>;
+  onConfirm?: (val: number) => void | Promise<void>;
   confirmText?: string;
   playerKey?: string;
+  gameWallet?: string;
   chargeLoading: boolean;
 }
 
@@ -14,44 +15,54 @@ const WithdrawModal: FC<Props> = ({
   onConfirm,
   confirmText,
   playerKey,
+  gameWallet,
   chargeLoading,
 }) => {
+  const inputElement = useRef() as React.MutableRefObject<HTMLInputElement>;
+
+  const handleWithDraw = () => {
+    if (onConfirm && inputElement.current.value) {
+      onConfirm(Number(inputElement.current.value));
+    }
+  };
+
   return (
     <BaseModal
       dense
-      modalName="WITHDRAW"
+      modalName="Withdraw"
       loading={false}
       confirmText={confirmText}
       chargeLoading={chargeLoading}
       customBody={
         <div>
-          <div className="text-base mt-2 ml-3">Game Wallet Address</div>
+          <div className="text-primary-800">Game Wallet Address</div>
           <input
             type="text"
-            className="bg-white mt-1 bg-opacity-50 rounded-full outline-none text-primary-100 py-3 px-7 w-full"
+            className="bg-primary-800 mt-2 bg-opacity-50 rounded-full outline-none text-white truncate py-3 px-7 w-full"
             readOnly
-            value="4zj7KF13agrr3VYEt3RxxhDtzHGQmL7KdhzGZ9nzp1xD"
+            value={gameWallet}
           />
-          <div className="text-base mt-4 ml-3">Destination Wallet Address</div>
+          <div className="mt-5 text-primary-800">Destination Wallet Address</div>
           <input
             type="text"
             className="bg-white mt-1 rounded-full outline-none text-primary-100 py-3 px-7 w-full"
             defaultValue={playerKey}
           />
-          <div className="text-base mt-4 ml-3">Withdraw Amount: *</div>
+          <div className="mt-5 text-primary-800">Withdraw Amount: *</div>
           <div className="relative mt-1 text-primary-100">
             <input
               type="number"
               className="bg-white rounded-full outline-none py-3 pl-7 pr-32 w-full"
+              ref={inputElement}
             />
-            <span className="uppercase absolute top-1/2 right-10 transform -translate-y-1/2">
+            <span className="flex justify-center items-center rounded-full px-4 font-semibold text-base absolute h-10 top-1/2 right-1 transform bg-primary-300 text-white -translate-y-1/2">
               Token
             </span>
           </div>
         </div>
       }
       onClose={onClose}
-      handleConfirm={onConfirm}
+      handleConfirm={handleWithDraw}
     />
   );
 };

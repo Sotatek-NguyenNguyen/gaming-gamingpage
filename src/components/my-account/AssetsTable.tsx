@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserTransactionsResponse } from './../../utils/interface';
+import { UserTransactionsResponse } from '../../utils/interface';
 import Paginations from '../shared/Paginations';
 import moment from 'moment';
 
@@ -13,7 +13,7 @@ interface Props {
   verifiedInGameAccount: boolean;
 }
 
-const TransactionTable: React.FC<Props> = ({
+const AssetsTable: React.FC<Props> = ({
   paginatedTransaction,
   hasNext,
   hasPrevious,
@@ -37,32 +37,21 @@ const TransactionTable: React.FC<Props> = ({
 
   const statusColor = (status: string) => {
     switch (status) {
-      case 'withdrawn':
-      case 'deducted':
-      case 'admin_deduct':
-      case 'granted':
-      case 'admin_grant':
+      case 'Minted':
         return 'bg-tx_status-100';
-      case 'deposit':
+      case 'MetadataUploading':
         return 'bg-tx_status-200';
-      case 'minted':
+      case 'Minting':
         return 'bg-tx_status-500';
-      case 'failed':
-        return 'bg-primary-400';
     }
     return '';
   };
 
   const statusText = (status: string) => {
     switch (status) {
-      case 'admin_deduct':
-        return 'Deducted';
-      case 'withdrawn':
-        return 'Withdraw';
-      case 'admin_grant':
-        return 'Granted';
-      case 'deposit':
-        return 'Deposited';
+      case 'MetadataUploading':
+        return 'Metadata Uploading';
+
       default:
         return status;
     }
@@ -74,11 +63,10 @@ const TransactionTable: React.FC<Props> = ({
         <table className="w-full table-fixed text-base">
           <thead className={`border-b border-white border-opacity-15 text-white`}>
             <tr className="text-lg text-left">
-              <th className="w-1/4 px-5 py-5 font-semibold">Deposit Address</th>
-              <th className="w-1/6 px-4 pl-6 py-5 font-semibold">Amount</th>
-              <th className="w-1/5 px-4 py-5 font-semibold">Transaction Note</th>
-              <th className="w-1/5 px-4 py-5 font-semibold">Created on</th>
-              <th className="w-1/6 px-4 py-5 font-semibold">Status</th>
+              <th className="w-1/4 px-5 py-5 text-left font-semibold">Item ID</th>
+              <th className="w-1/4 px-5 py-5 font-semibold">Item Name</th>
+              <th className="w-1/4 px-5 py-5 font-semibold">Added on</th>
+              <th className="w-1/6 px-2 py-5 font-semibold">Status</th>
             </tr>
           </thead>
           <tbody className="text-primary-800">
@@ -89,27 +77,35 @@ const TransactionTable: React.FC<Props> = ({
                 </td>
               </tr>
             ) : data && data.length > 0 ? (
-              data.map(({ id, transactionId, amount, createdAt, type, note }, idx) => (
+              data.map(({ id, gameItemId, createdAt, status, gameItemName }, idx) => (
                 <tr
                   key={id}
                   className={`${
                     data.length - 1 !== idx ? 'border-b border-white border-opacity-15' : ''
                   }`}
                 >
-                  <td className="px-5 py-6 w-1/4 truncate">{transactionId}</td>
-                  <td className="px-5 pl-6 py-6 w-1/6">{amount}</td>
-                  <td className="px-5 py-6 w-1/5 truncate">{note}</td>
-                  <td className="px-5 py-6 w-1/5">
+                  <td className="px-5 py-6 w-full truncate">{gameItemId}</td>
+                  <td className="px-5 py-6">
+                    {gameItemName && (
+                      <div className="w-max">
+                        <p className="uppercase font-bold">NFT</p>
+                        <p>{gameItemName}</p>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-5 py-6">
                     {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}
                   </td>
-                  <td className={`px-5 py-6 w-1/6 capitalize`}>
-                    <span
-                      className={`text-white py-2 px-4 rounded-full font-semibold text-base ${statusColor(
-                        type,
-                      )}`}
-                    >
-                      {statusText(type)}
-                    </span>
+                  <td className={`px-2 py-6 capitalize`}>
+                    {status && (
+                      <span
+                        className={`text-white py-2 px-4 rounded-full font-semibold text-base ${statusColor(
+                          status,
+                        )}`}
+                      >
+                        {statusText(status)}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))
@@ -134,4 +130,4 @@ const TransactionTable: React.FC<Props> = ({
   );
 };
 
-export default TransactionTable;
+export default AssetsTable;

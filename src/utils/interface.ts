@@ -41,7 +41,7 @@ export interface UserDetailResponse {
 }
 
 export interface UserWithdrawResponse {
-  success: boolean;
+  serializedTx: string;
 }
 
 export interface UserTransaction {
@@ -55,6 +55,9 @@ export interface UserTransaction {
   note?: string;
   referenceId?: string;
   address?: string;
+  gameItemId: string;
+  status?: string;
+  gameItemName?: string;
 }
 
 export interface UserTransactionsResponse {
@@ -72,4 +75,25 @@ export interface ITransactionFilter {
   toDate?: string;
   type?: string;
   transactionId?: string;
+}
+
+export interface UserMintNFTArweaveUploadResponse {
+  serializedTx: string;
+  nftItemId: string;
+  metadata: ArweaveMetaData;
+}
+
+interface ArweaveMetaData {
+  name: string;
+  gameItemId: string;
+  image: string;
+  description: string;
+  royaltiesPercentage: number;
+  costToCreate: number;
+  attributes: ArweaveMetaDataAttribute[];
+}
+
+interface ArweaveMetaDataAttribute {
+  trait_type: string;
+  value: string;
 }

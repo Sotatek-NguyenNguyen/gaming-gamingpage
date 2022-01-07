@@ -5,7 +5,7 @@ import { UserTransactionsResponse } from './../utils/interface';
 
 const PAGE_SIZE = 10;
 
-export const useDataTable = () => {
+export const useDataTable = (verifiedInGameAccount: boolean) => {
   const [hasNext, setHasNext] = useState(false);
   const [hasPrevious, setHasPrevious] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export const useDataTable = () => {
       await getDataBySection({ page: 1, pageSize: PAGE_SIZE });
     };
     init();
-  }, [tabActive]);
+  }, [tabActive, verifiedInGameAccount]);
 
   const movePage = async (page: number): Promise<void> => {
     getDataBySection({ page, pageSize: PAGE_SIZE });
@@ -59,7 +59,7 @@ export const useDataTable = () => {
   };
 
   const previousPage = async (): Promise<void> => {
-    if (currPaginated && hasNext) {
+    if (currPaginated && hasPrevious) {
       getDataBySection({ page: currPaginated.page - 1, pageSize: PAGE_SIZE });
     }
   };
@@ -73,21 +73,23 @@ export const useDataTable = () => {
       condition.walletAddress = params.walletPublicKey;
     } */
 
-    if (!hideLoading) setLoading(true);
-    try {
-      const serverResponseData = tabActive
-        ? await getCurrentUserNftItems({
-            params,
-          })
-        : await getCurrentUserTransactionHistory({
-            params,
-          });
+    if (verifiedInGameAccount) {
+      if (!hideLoading) setLoading(true);
+      try {
+        const serverResponseData = tabActive
+          ? await getCurrentUserNftItems({
+              params,
+            })
+          : await getCurrentUserTransactionHistory({
+              params,
+            });
 
-      setCurrPaginated(serverResponseData);
-    } catch (err) {
-      setCurrPaginated(null);
-    } finally {
-      if (!hideLoading) setLoading(false);
+        setCurrPaginated(serverResponseData);
+      } catch (err) {
+        setCurrPaginated(null);
+      } finally {
+        if (!hideLoading) setLoading(false);
+      }
     }
   };
 

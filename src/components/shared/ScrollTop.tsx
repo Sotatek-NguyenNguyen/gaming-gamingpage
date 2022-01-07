@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import DoubleArrow from './../shared/icons/DoubleArrow';
 
 const ScrollTop: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -30,15 +31,9 @@ const ScrollTop: React.FC = () => {
   return (
     <div
       onClick={scrollToTop}
-      className="fixed z-50 text-center text-white cursor-pointer bottom-0 right-2 md:right-10"
+      className="fixed z-50 text-center text-white bg-primary-300 p-4 rounded-full cursor-pointer bottom-20 right-2 md:right-10"
     >
-      <Image
-        width={32}
-        height={32}
-        src="/icons/back_to_top.svg"
-        alt="up top"
-        className="z-50 text-center"
-      />
+      <DoubleArrow />
     </div>
   );
 };

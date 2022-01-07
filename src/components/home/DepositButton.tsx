@@ -7,6 +7,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import DepositModal from '../my-account/DepositModal';
 import { IDL } from '../../utils/treasury';
 import * as spl from '@solana/spl-token';
+import { useRouter } from 'next/router';
 
 declare global {
   interface Window {
@@ -17,10 +18,11 @@ declare global {
 const treasuryPDASeed = Buffer.from('treasury');
 
 const DepositButton: FC = () => {
+  const router = useRouter();
   const { alertError, alertSuccess } = useAlert();
   const { wallet, publicKey } = useWallet();
   const { isAuthenticated } = useAuth();
-  const { gameData } = useGlobal();
+  /* const { gameData } = useGlobal();
   const [chargeLoading, setChargeLoading] = useState<boolean>(false);
 
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
@@ -30,14 +32,15 @@ const DepositButton: FC = () => {
     commitment: 'processed' as Commitment,
   };
 
-  const { SystemProgram } = web3;
+  const { SystemProgram } = web3; */
 
   const handleDeposit = () => {
     if (!wallet || !isAuthenticated) {
       alertError('Please connect to your wallet');
       return;
     }
-    confirmAlert({
+    router.push('/my-account', '/my-account', { shallow: true });
+    /* confirmAlert({
       customUI: ({ onClose }) => {
         async function sendTransaction(depositValue: number) {
           const wallet = window.solana;
@@ -108,15 +111,15 @@ const DepositButton: FC = () => {
           />
         );
       },
-    });
+    }); */
   };
 
   return (
     <button
-      className="mt-12 font-bold rounded-xl uppercase text-white bg-transparent bg-opacity-70 hover:bg-secondary-100 px-10 py-5 border-3 border-primary-200 transition-all"
+      className="mt-12 px-12 h-14 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
       onClick={handleDeposit}
     >
-      DEPOSIT TO PLAY
+      Deposit To Play
     </button>
   );
 };

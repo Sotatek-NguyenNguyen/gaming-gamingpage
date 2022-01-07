@@ -34,22 +34,16 @@ const BaseModal: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={`relative flex flex-col items-center w-full overflow-hidden rounded-b-lg shadow-lg ${modalMW}`}
+      className={`relative flex flex-col items-center w-full overflow-hidden rounded-2xl p-10 shadow-lg bg-primary-100 ${modalMW}`}
     >
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
+        <div className="absolute inset-0 flex items-center justify-center bg-opacity-75">
           <Spinner size="medium" variant="basic" />
         </div>
       )}
 
-      <div
-        className={clsx(
-          'flex items-center justify-center w-full px-4 py-8 uppercase text-lg text-white bg-primary-500 text-center',
-        )}
-      >
-        {modalName}
-      </div>
-      <div className={clsx('w-full bg-primary-100 text-white p-4', {})}>
+      <div className="w-full font-bold text-xl text-white">{modalName}</div>
+      <div className="w-full text-white mt-6">
         {customBody ? (
           customBody
         ) : (
@@ -73,9 +67,9 @@ const BaseModal: React.FC<Props> = ({
           </div>
         )}
 
-        <div className="flex items-center justify-center w-full mb-4 px-4">
+        <div className="flex items-center justify-center w-full px-4">
           <button
-            className="w-56 h-14 mt-6 uppercase text-white rounded-xl bg-transparent bg-opacity-70 hover:bg-secondary-100 border-3 border-primary-200 transition-all"
+            className="w-56 h-12 mt-8 text-white rounded-full font-semibold overflow-hidden text-base bg-primary-300 hover:bg-primary-100 transition-all"
             onClick={handleConfirm}
             disabled={chargeLoading}
           >

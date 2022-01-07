@@ -36,9 +36,10 @@ const NavbarMenuItem: FC<Props> = ({ menu }) => {
     <li
       onClick={handleMenuChange}
       className={clsx(
-        'py-1 text-lg w-56 px-4 cursor-pointer text-center inline-flex items-center justify-center rounded-t-xl',
+        'py-3.5 -mb-1 text-lg px-12 cursor-pointer text-center inline-flex items-center justify-center rounded-t-xl border-b-4',
         {
-          'bg-primary-100': isActive,
+          'bg-primary-300 bg-opacity-40 border-primary-500 font-semibold': isActive,
+          'border-primary-400': !isActive,
         },
       )}
     >

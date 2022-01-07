@@ -1,10 +1,10 @@
-import { FaCaretLeft, FaCaretRight } from 'react-icons/fa';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import clsx from 'clsx';
 import { getListPageFromTotalPage } from '../../utils/helper';
 
 interface Props {
-  totalPages: number;
-  currentPage: number;
+  totalPages?: number;
+  currentPage?: number;
   hasNext: boolean;
   hasPrevious: boolean;
   handleGoNext: () => void;
@@ -21,30 +21,30 @@ const Paginations: React.FC<Props> = ({
   handleGoPrevious,
   handleGoToPage,
 }) => {
-  if (totalPages === 1) {
+  if (!totalPages || totalPages === 1) {
     return null;
   }
 
   const listPage = getListPageFromTotalPage(totalPages);
 
   return (
-    <ul className="flex items-center justify-center mb-4 text-white bg-transparent">
+    <ul className="flex items-center justify-center mt-6 mb-4 bg-transparent">
       {hasPrevious && (
-        <li className={`mr-2 text-white bg-transparent cursor-pointer`} onClick={handleGoPrevious}>
-          <FaCaretLeft />
+        <li
+          className={`mr-1 w-8 h-8 flex items-center justify-center text-primary-800 rounded-md cursor-pointer bg-primary-200`}
+          onClick={handleGoPrevious}
+        >
+          <FaAngleLeft />
         </li>
       )}
 
       {listPage.map((p) => (
         <li
           key={`page_${p}`}
-          className={clsx(
-            'flex items-center justify-center text-center w-10 h-10 mx-2 text-white',
-            {
-              'border bg-primary-600 border-black border-opacity-25 rounded-md': p === currentPage,
-              'cursor-pointer': p !== currentPage,
-            },
-          )}
+          className={clsx('flex items-center justify-center text-center w-8 h-8 mx-1 rounded-md', {
+            'bg-primary-300 text-white': p === currentPage,
+            'cursor-pointer bg-primary-200 text-primary-800': p !== currentPage,
+          })}
           onClick={() => {
             if (p !== currentPage) {
               handleGoToPage(p);
@@ -56,8 +56,11 @@ const Paginations: React.FC<Props> = ({
       ))}
 
       {hasNext && (
-        <li className={`ml-2 text-white bg-transparent cursor-pointer`} onClick={handleGoNext}>
-          <FaCaretRight />
+        <li
+          className={`ml-1 w-8 h-8 flex items-center justify-center text-primary-800 cursor-pointer bg-primary-200 rounded-md`}
+          onClick={handleGoNext}
+        >
+          <FaAngleRight />
         </li>
       )}
     </ul>

@@ -31,14 +31,14 @@ const NavBarMenuItem: React.FC<Props> = ({ name, link, externalLink, variant, on
 
   return (
     <li
-      className={clsx('text-white cursor-pointer uppercase transition-all ', {
+      className={clsx('text-white cursor-pointer uppercase transition-all text-lg font-semibold', {
         'w-full p-4 hover:bg-primary-300 rounded-md': variant === 'horizontal',
         'px-4 lg:px-12 py-4 lg:py-7 hover:bg-primary-300': variant === 'vertical',
         'bg-primary-300': isRouteActive,
       })}
       onClick={handleNavBarMenuItemClick}
     >
-      <a className="text-s16px">{name}</a>
+      {name}
     </li>
   );
 };
