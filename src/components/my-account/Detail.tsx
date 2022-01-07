@@ -37,7 +37,7 @@ declare global {
 }
 
 const treasuryPDASeed = Buffer.from('treasury');
-export const expiredTime = 600000; // 10 mins
+export const expiredTime = 600; // 10 mins
 
 const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey, signTransaction, signMessage } = useWallet();
@@ -46,6 +46,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const { alertError, alertSuccess } = useAlert();
   const [chargeLoading, setChargeLoading] = useState<boolean>(false);
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
+  const isAccountVerified = useMemo(() => user?.accountInGameId, [user]);
 
   const opts: ConfirmOptions = {
     preflightCommitment: 'processed' as Commitment,
@@ -64,7 +65,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
     return {
       address: address.toString(),
       // iat: now,
-      exp: now + expiredTime,
+      exp: now + expiredTime * 1000,
     };
   };
 
@@ -118,7 +119,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
                 },
               );
               alertSuccess('Deposited successfully');
-              console.log('signature: ', signature);
+              // console.log('signature: ', signature);
             } catch (error) {
               console.error(error);
               setChargeLoading(false);
@@ -158,7 +159,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
               const signature = await connection.sendRawTransaction(signed.serialize());
               await connection.confirmTransaction(signature);
               alertSuccess('Withdraw successfully');
-              console.log({ signature });
+              // console.log({ signature });
             } catch (error) {
               console.error(error);
               setChargeLoading(false);
@@ -190,10 +191,9 @@ const Detail: FC<Props> = ({ user, loading }) => {
         return (
           <MintNFTModal
             onClose={onClose}
-            onConfirm={onClose}
-            confirmText="Mint"
             playerKey={base58}
-            chargeLoading={chargeLoading}
+            signTransaction={signTransaction}
+            connection={connection}
           />
         );
       },
@@ -282,31 +282,31 @@ const Detail: FC<Props> = ({ user, loading }) => {
               className={clsx(
                 'w-60 p-2 h-12 font-semibold overflow-hidden text-lg text-white rounded-full transition-all',
                 {
-                  'bg-primary-300 hover:bg-primary-100': user && user.accountInGameId,
-                  'bg-primary-800': user && !user.accountInGameId,
+                  'bg-primary-300 hover:bg-primary-100': isAccountVerified,
+                  'bg-primary-800': !isAccountVerified,
                 },
               )}
-              onClick={user && user.accountInGameId ? handleDeposit : () => {}}
-              disabled={user && user.accountInGameId ? true : false}
+              onClick={isAccountVerified ? handleDeposit : () => {}}
+              disabled={isAccountVerified ? true : false}
             >
               Deposit
             </button>
             <button
               className="w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full bg-primary-300 hover:bg-primary-100 transition-all"
-              onClick={user && user.accountInGameId ? handleWithdraw : handleVerifyInGameAccount}
+              onClick={isAccountVerified ? handleWithdraw : handleVerifyInGameAccount}
             >
-              {user && user.accountInGameId ? 'Withdraw' : 'Verify wallet with OTP'}
+              {isAccountVerified ? 'Withdraw' : 'Verify wallet with OTP'}
             </button>
             <button
               className={clsx(
                 'w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full transition-all',
                 {
-                  'bg-primary-300 hover:bg-primary-100': user && user.accountInGameId,
-                  'bg-primary-800': user && !user.accountInGameId,
+                  'bg-primary-300 hover:bg-primary-100': isAccountVerified,
+                  'bg-primary-800': !isAccountVerified,
                 },
               )}
-              onClick={user && user.accountInGameId ? handleMintNFT : () => {}}
-              disabled={user && user.accountInGameId ? true : false}
+              onClick={/* isAccountVerified ? */ handleMintNFT /* : () => {} */}
+              disabled={isAccountVerified ? true : false}
             >
               Request Mint NFT
             </button>
@@ -314,7 +314,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
         </div>
         <div className="mt-6 text-white">
           <NavbarMenus />
-          <TransactionsTable verifiedInGameAccount={user && user.accountInGameId ? true : false} />
+          <TransactionsTable verifiedInGameAccount={isAccountVerified ? true : false} />
         </div>
       </div>
     </div>

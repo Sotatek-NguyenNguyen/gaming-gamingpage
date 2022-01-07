@@ -25,7 +25,7 @@ const VerifyInGameAccountModal: FC<Props> = ({
   signMessage,
   publicKey,
 }) => {
-  const [countDown, setCountDown] = useState<number>(600); // 600s = 10mins
+  const [countDown, setCountDown] = useState<number>(expiredTime);
   const [runTimer, setRunTimer] = useState<boolean>(true);
   const [otpCode, setOtpCode] = useState<string>(otpToken);
   const { alertInfo } = useAlert();
@@ -63,7 +63,6 @@ const VerifyInGameAccountModal: FC<Props> = ({
         signature: Buffer.from(signatureOTPGenerate).toString('hex'),
       };
       setOtpCode(bs58.encode(Buffer.from(JSON.stringify(signedOTPDataGenerate))));
-      // setOtpCode(Buffer.from(signatureOTPGenerate).toString('hex'));
       setRunTimer(true);
       setCountDown(expiredTime);
     } catch (error) {

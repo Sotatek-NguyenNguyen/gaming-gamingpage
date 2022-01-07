@@ -12,8 +12,7 @@ export function useAlert() {
       </div>,
       {
         icon: <CheckedIcon />,
-        className: 'bg-primary-100 text-white font-normal',
-        closeButton: <CloseWhiteIcon />,
+        className: 'bg-primary-200 text-white font-normal rounded-lg border-2 border-primary-700',
       },
     );
   };
@@ -25,8 +24,7 @@ export function useAlert() {
       </div>,
       {
         icon: <CloseIcon />,
-        className: 'bg-primary-100 text-white font-normal',
-        closeButton: <CloseWhiteIcon />,
+        className: 'bg-primary-200 text-white font-normal rounded-lg border-2 border-primary-600',
       },
     );
   };
@@ -38,8 +36,7 @@ export function useAlert() {
       </div>,
       {
         icon: <InfoIcon />,
-        className: 'bg-primary-100 text-white font-normal',
-        closeButton: <CloseWhiteIcon />,
+        className: 'bg-primary-200 text-white font-normal rounded-lg border-2 border-primary-200',
       },
     );
   };
@@ -51,8 +48,7 @@ export function useAlert() {
       </div>,
       {
         icon: <InfoIcon />,
-        className: 'bg-primary-100 text-white font-normal',
-        closeButton: <CloseWhiteIcon />,
+        className: 'bg-primary-200 text-white font-normal rounded-lg border-2 border-primary-200',
       },
     );
   };

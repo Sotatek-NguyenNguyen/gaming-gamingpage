@@ -74,3 +74,22 @@ export interface ITransactionFilter {
   type?: string;
   transactionId?: string;
 }
+
+export interface UserMintNFTArweaveUploadResponse {
+  serializedTx: string;
+  nftItemId: string;
+  metadata: ArweaveMetaData;
+}
+
+interface ArweaveMetaData {
+  name: string;
+  gameItemId: string;
+  image: string;
+  description: string;
+  attributes: ArweaveMetaDataAttribute[];
+}
+
+interface ArweaveMetaDataAttribute {
+  trait_type: string;
+  value: string;
+}
