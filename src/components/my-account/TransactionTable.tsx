@@ -38,19 +38,17 @@ const TransactionTable: React.FC<Props> = ({
   const statusColor = (status: string) => {
     switch (status) {
       case 'withdrawn':
+      case 'deducted':
+      case 'admin_deduct':
+      case 'granted':
+      case 'admin_grant':
         return 'bg-tx_status-100';
       case 'deposit':
         return 'bg-tx_status-200';
-      case 'deducted':
-      case 'admin_deduct':
-        return 'bg-tx_status-300';
-      case 'granted':
-      case 'admin_grant':
-        return 'bg-tx_status-400';
       case 'minted':
         return 'bg-tx_status-500';
       case 'failed':
-        return 'bg-white';
+        return 'bg-primary-400';
     }
     return '';
   };
@@ -59,10 +57,12 @@ const TransactionTable: React.FC<Props> = ({
     switch (status) {
       case 'admin_deduct':
         return 'Deducted';
-
+      case 'withdrawn':
+        return 'Withdraw';
       case 'admin_grant':
         return 'Granted';
-
+      case 'deposit':
+        return 'Deposited';
       default:
         return status;
     }
