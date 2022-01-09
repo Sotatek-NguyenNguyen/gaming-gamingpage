@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from 'react';
 import { Cluster, PublicKey } from '@solana/web3.js';
 import { useConnection, useLocalStorageState, useGlobal } from '../hooks';
-import { formatNumber, transformLamportsToSOL, renderTokenBalance } from '../shared/helper';
+import { formatNumber, transformLamportsToSOL } from '../shared/helper';
+import { renderTokenBalance } from '../utils/helper';
 import { useWallet } from '@solana/wallet-adapter-react';
 import * as bs58 from 'bs58';
 import { signatureMsgAuth, loginAuth } from '../api/auth';
