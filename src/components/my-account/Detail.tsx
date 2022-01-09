@@ -20,7 +20,7 @@ import WithdrawModal from './WithdrawModal';
 import MintNFTModal from './MintNFTModal';
 import VerifyInGameAccountModal from './VerifyInGameAccountModal';
 import { UserDetailResponse } from '../../utils/interface';
-import { useGlobal, useAlert } from '../../hooks';
+import { useGlobal, useAlert, useAuth } from '../../hooks';
 import { IDL } from '../../utils/treasury';
 import { renderTokenBalance } from '../../utils/helper';
 import { userWithdrawAction } from '../../api/user';
@@ -43,6 +43,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey, signTransaction, signMessage } = useWallet();
   // const { connection } = useConnection();
   const { gameData } = useGlobal();
+  const { cluster } = useAuth();
   const { alertError, alertSuccess } = useAlert();
   const [chargeLoading, setChargeLoading] = useState<boolean>(false);
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
@@ -56,7 +57,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const { SystemProgram } = web3;
   const wallet = window.solana;
 
-  const network = clusterApiUrl('devnet');
+  const network = clusterApiUrl(cluster);
   const connection = new Connection(network, opts.preflightCommitment);
   const provider = new Provider(connection, wallet, opts);
 

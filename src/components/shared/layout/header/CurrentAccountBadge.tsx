@@ -12,7 +12,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showErr, setShowErr] = useState(false);
-
+  console.log(balance);
   const { alertInfo, alertError } = useAlert();
   const { refreshWalletBalance } = useSmartContract();
 
@@ -53,14 +53,14 @@ const CurrentAccountBadge: FC = ({ children }) => {
         setLoading(false);
       } catch (err) {
         setLoading(false);
-        setAccountBalance(null);
+        setAccountBalance(0);
       }
     };
 
     if (connected) {
       initBalance();
     } else {
-      setAccountBalance(null);
+      setAccountBalance(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected, isAuthenticated]);
@@ -115,7 +115,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
   }
 
   return (
-    <div className="flex items-center justify-between w-64 h-12 overflow-hidden text-sm rounded-full shadow-md border border-primary-300">
+    <div className="flex items-center justify-between min-w-max h-12 overflow-hidden text-sm rounded-full shadow-md border border-primary-300">
       <button
         onClick={onDisconnect}
         className="flex items-center justify-center p-2 mx-2 bg-primary-400 rounded-full"
@@ -127,7 +127,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
           <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
         ) : (
           <span className="ml-auto text-sm tracking-normal text-white">
-            {balance?.formatted} SOL
+            {balance?.formatted} Token
           </span>
         )}
         <div

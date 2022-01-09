@@ -1,15 +1,12 @@
 import { createContext, useEffect, useState } from 'react';
 import { Cluster, PublicKey } from '@solana/web3.js';
-import { useConnection, useLocalStorageState } from '../hooks';
-import { formatNumber, transformLamportsToSOL } from '../shared/helper';
-import /* isTokenOwnedByAddress,
-  verifyAndDecode,
-  createTokenWithSignMessageFunc,
-  createTokenWithWalletAdapter, */
-'@gamify/onchain-program-sdk';
+import { useConnection, useLocalStorageState, useGlobal } from '../hooks';
+import { formatNumber, transformLamportsToSOL, renderTokenBalance } from '../shared/helper';
 import { useWallet } from '@solana/wallet-adapter-react';
 import * as bs58 from 'bs58';
 import { signatureMsgAuth, loginAuth } from '../api/auth';
+import { envConfig } from '../configs';
+import { Token, ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -23,9 +20,11 @@ interface AuthState {
   changeCluster: (cluster: Cluster) => void;
 }
 
+const { SOLLET_ENV } = envConfig;
+
 const defaultState: AuthState = {
   isAuthenticated: false,
-  cluster: 'devnet',
+  cluster: SOLLET_ENV,
   balance: {
     value: 0,
     formatted: '0',
@@ -49,6 +48,7 @@ const AuthContext = createContext<AuthState>(defaultState);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const { wallet, publicKey: walletPublicKey } = useWallet();
+  const { gameData } = useGlobal();
   const [publicKey, setPublicKey] = useLocalStorageState('public_key');
   const [accessToken, setAccessToken] = useLocalStorageState('access_token');
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -63,20 +63,10 @@ export const AuthProvider: React.FC = ({ children }) => {
     formatted: '0',
   });
   const { connection } = useConnection();
-  const [cluster, setCluster] = useState<Cluster>('devnet');
+  const [cluster, setCluster] = useState<Cluster>(SOLLET_ENV);
 
   const decodeToken = (token: string): IPayloadWithSignature => {
     return JSON.parse(bs58.decode(token).toString()) as IPayloadWithSignature;
-  };
-
-  const isTokenOwnedByAddress = (token: string, address: PublicKey) => {
-    try {
-      const payloadWithSig = decodeToken(token);
-      return payloadWithSig.address === address.toString();
-    } catch (error) {
-      console.log('isTokenOwnedByAddress: error', error);
-      return false;
-    }
   };
 
   useEffect(() => {
@@ -89,47 +79,40 @@ export const AuthProvider: React.FC = ({ children }) => {
         return false;
       }
 
-      /* if (!isTokenOwnedByAddress(accessToken, publicKey)) {
-        return false;
-      }
-
-      const result = verifyAndDecode(accessToken);
-      if (!result.isValid || result.isExpired) {
-        return false;
-      } */
-
       return true;
     };
     setIsAuthenticated(getAuthenStatus());
   }, [wallet, walletPublicKey]);
 
+  const getAccountTokenInfo = async () => {
+    if (gameData?.tokenAddress && publicKey) {
+      const tokenAccount = await Token.getAssociatedTokenAddress(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        new PublicKey(gameData.tokenAddress),
+        publicKey,
+      );
+      const tokenAccountBalance = await connection.getTokenAccountBalance(tokenAccount);
+      if (tokenAccountBalance && tokenAccountBalance.value) {
+        const balanceResult = renderTokenBalance(tokenAccountBalance.value.uiAmount, 2);
+
+        setBalance({
+          value: balanceResult,
+          formatted: formatNumber.format(balanceResult) as string,
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     if (publicKey) {
-      connection
-        .getAccountInfo(new PublicKey(publicKey))
-        .then((response: any) => {
-          const balanceResult = transformLamportsToSOL(response?.lamports!);
-          setBalance({
-            value: balanceResult,
-            formatted: formatNumber.format(balanceResult) as string,
-          });
-        })
-        .catch((err: any) => console.error(err));
+      getAccountTokenInfo();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey]);
 
   const changeCluster = (newCluster: Cluster): void => {
     setCluster(newCluster);
-  };
-
-  const createPayload = (address: PublicKey) => {
-    const now = new Date().getTime();
-    return {
-      address: address.toString(),
-      iat: now,
-      exp: now + expiredTime,
-    };
   };
 
   const login = async (
@@ -150,16 +133,6 @@ export const AuthProvider: React.FC = ({ children }) => {
           signature: Buffer.from(signature),
         });
         token = tokenResponse.accessToken;
-
-        // handle sign OTP
-        /* const payload = createPayload(walletAddress);
-        const signatureOTP = await signMessage(Buffer.from(JSON.stringify(payload)));
-        const signedOTPData = {
-          ...payload,
-          signature: Buffer.from(signatureOTP).toString('hex'),
-        };
-        const otpToken = bs58.encode(Buffer.from(JSON.stringify(signedOTPData)));
-        console.log(otpToken); */
       } else {
         /* token = await createTokenWithWalletAdapter(adapter._wallet); */
         const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
