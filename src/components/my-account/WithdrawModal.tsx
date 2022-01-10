@@ -7,6 +7,7 @@ interface Props {
   confirmText?: string;
   playerKey?: string;
   gameWallet?: string;
+  tokenCode?: string;
   chargeLoading: boolean;
 }
 
@@ -17,6 +18,7 @@ const WithdrawModal: FC<Props> = ({
   playerKey,
   gameWallet,
   chargeLoading,
+  tokenCode,
 }) => {
   const inputElement = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -54,10 +56,13 @@ const WithdrawModal: FC<Props> = ({
               type="number"
               className="bg-white rounded-full outline-none py-3 pl-7 pr-32 w-full"
               ref={inputElement}
+              onKeyDown={(evt) => ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()}
             />
-            <span className="flex justify-center items-center rounded-full px-4 font-semibold text-base absolute h-10 top-1/2 right-1 transform bg-primary-300 text-white -translate-y-1/2">
-              Token
-            </span>
+            {tokenCode && (
+              <span className="flex justify-center items-center rounded-full px-4 font-semibold text-base absolute h-10 top-1/2 right-1 transform bg-primary-300 text-white -translate-y-1/2">
+                {tokenCode}
+              </span>
+            )}
           </div>
         </div>
       }

@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import { PublicKey } from '@solana/web3.js';
 import { useAlert } from '../../hooks/useAlert';
 import * as bs58 from 'bs58';
+import CopyIcon from '../shared/icons/Copy';
 
 interface Props {
   onClose?: () => void | Promise<void>;
@@ -72,15 +73,18 @@ const VerifyInGameAccountModal: FC<Props> = ({
 
   const handleConfirm = async () => {
     if (countDown) {
-      if (otpToken) {
-        await navigator.clipboard.writeText(otpToken);
-        alertInfo('Copied OTP');
-      }
       if (onClose) {
         onClose();
       }
     } else {
       handleRegenerateOTP();
+    }
+  };
+
+  const onCopyToken = async () => {
+    if (otpToken) {
+      await navigator.clipboard.writeText(otpToken);
+      alertInfo('Copied OTP');
     }
   };
 
@@ -98,19 +102,24 @@ const VerifyInGameAccountModal: FC<Props> = ({
 
       <div className="w-full text-white">
         <div className="mt-10 text-center">
-          <h4 className="text-xl font-bold mb-4">Gamify Connect Request</h4>
+          <h4 className="text-xl font-bold mb-4">ACCOUNT CONFIRMATION</h4>
           <p
             className="text-primary-800 mb-7"
             dangerouslySetInnerHTML={{
-              __html: `Gamify needs to confirm the wallet address linkage to your Game account. <b>Copy the OTP</b> to your game then click <b>CONFIRM</b> to complete the connection:`,
+              __html: `We need to confirm the wallet address linkage to your Game account. <b>Copy the OTP</b> to your game then click <b>CLOSE</b> to complete the connection:`,
             }}
           />
-          <input
-            type="text"
-            className="bg-transparent mt-2 bg-opacity-50 rounded-full outline-none border border-primary-300 text-white truncate py-3 px-7 w-full font-bold"
-            readOnly
-            defaultValue={otpCode}
-          />
+          <div className="relative mt-2">
+            <input
+              type="text"
+              className="bg-transparent bg-opacity-50 rounded-full outline-none border border-primary-300 text-white py-3 px-7 pr-16 w-full font-bold"
+              readOnly
+              defaultValue={otpCode}
+            />
+            <div className="absolute right-6 top-3.5 cursor-pointer" onClick={onCopyToken}>
+              <CopyIcon />
+            </div>
+          </div>
           <div
             className="mt-4 text-primary-800"
             dangerouslySetInnerHTML={{

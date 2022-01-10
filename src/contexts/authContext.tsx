@@ -87,20 +87,24 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   const getAccountTokenInfo = async () => {
     if (gameData?.tokenAddress && publicKey) {
-      const tokenAccount = await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        new PublicKey(gameData.tokenAddress),
-        publicKey,
-      );
-      const tokenAccountBalance = await connection.getTokenAccountBalance(tokenAccount);
-      if (tokenAccountBalance && tokenAccountBalance.value) {
-        const balanceResult = renderTokenBalance(tokenAccountBalance.value.uiAmount, 2);
+      try {
+        const tokenAccount = await Token.getAssociatedTokenAddress(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          TOKEN_PROGRAM_ID,
+          new PublicKey(gameData.tokenAddress),
+          publicKey,
+        );
+        const tokenAccountBalance = await connection.getTokenAccountBalance(tokenAccount);
+        if (tokenAccountBalance && tokenAccountBalance.value) {
+          const balanceResult = renderTokenBalance(tokenAccountBalance.value.uiAmount, 2);
 
-        setBalance({
-          value: balanceResult,
-          formatted: formatNumber.format(balanceResult) as string,
-        });
+          setBalance({
+            value: balanceResult,
+            formatted: formatNumber.format(balanceResult) as string,
+          });
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
   };

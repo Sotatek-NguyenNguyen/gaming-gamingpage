@@ -22,8 +22,9 @@ import VerifyInGameAccountModal from './VerifyInGameAccountModal';
 import { UserDetailResponse } from '../../utils/interface';
 import { useGlobal, useAlert, useAuth } from '../../hooks';
 import { IDL } from '../../utils/treasury';
-import { renderTokenBalance } from '../../utils/helper';
+import { renderTokenBalance, roundNumberByDecimal } from '../../utils/helper';
 import { userWithdrawAction } from '../../api/user';
+import Decimal from 'decimal.js';
 
 interface Props {
   user?: UserDetailResponse;
@@ -140,6 +141,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             playerKey={base58}
             chargeLoading={chargeLoading}
             gameWallet={gameData.walletAddress}
+            tokenCode={gameData.tokenCode}
           />
         );
       },
@@ -150,7 +152,12 @@ const Detail: FC<Props> = ({ user, loading }) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         const handleWithdraw = async (amount: number) => {
-          if (signTransaction) {
+          if (signTransaction && user?.balance) {
+            if (new Decimal(amount).toNumber() > new Decimal(user.balance).toNumber()) {
+              onClose();
+              alertError('Withdraw amount cannot be greater than Actual game balance');
+              return;
+            }
             setChargeLoading(true);
             try {
               const serverTx = await userWithdrawAction({ amount });
@@ -180,6 +187,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             playerKey={base58}
             chargeLoading={chargeLoading}
             gameWallet={gameData.walletAddress}
+            tokenCode={gameData.tokenCode}
           />
         );
       },
@@ -217,7 +225,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             return (
               <VerifyInGameAccountModal
                 onClose={onClose}
-                confirmText="Confirm"
+                confirmText="Close"
                 otpToken={otpToken}
                 logoUrl={gameData.logoURL}
                 expiredTime={expiredTime}
@@ -246,7 +254,12 @@ const Detail: FC<Props> = ({ user, loading }) => {
             ) : (
               <span className="text-4xl">
                 {user && user?.balance !== 0
-                  ? renderTokenBalance(user.balance / (10 * gameData.tokenDecimals), 2)
+                  ? roundNumberByDecimal(
+                      new Decimal(user.balance).dividedBy(
+                        Decimal.pow(10, gameData.tokenDecimals).toNumber(),
+                      ),
+                      2,
+                    ).toNumber()
                   : user?.balance}
               </span>
             )}
