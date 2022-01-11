@@ -28,10 +28,11 @@ const DepositModal: FC<Props> = ({
     }
   };
 
-  const onValidateInput = (evt: { target: HTMLInputElement }) => {
-    if (evt.target?.value) {
-      const t = evt.target.value;
-      evt.target.value =
+  const onValidateInput = (evt: React.FormEvent<HTMLInputElement>) => {
+    const element = evt.target as HTMLInputElement;
+    if (element?.value) {
+      const t = element.value;
+      element.value =
         t.indexOf('.') >= 0 ? t.substr(0, t.indexOf('.')) + t.substr(t.indexOf('.'), 7) : t;
     }
   };
