@@ -22,7 +22,7 @@ import VerifyInGameAccountModal from './VerifyInGameAccountModal';
 import { UserDetailResponse } from '../../utils/interface';
 import { useGlobal, useAlert, useAuth } from '../../hooks';
 import { IDL } from '../../utils/treasury';
-import { renderTokenBalance, roundNumberByDecimal } from '../../utils/helper';
+import { roundNumberByDecimal } from '../../utils/helper';
 import { userWithdrawAction } from '../../api/user';
 import Decimal from 'decimal.js';
 
@@ -43,7 +43,7 @@ export const expiredTime = 600; // 10 mins
 const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey, signTransaction, signMessage } = useWallet();
   // const { connection } = useConnection();
-  const { gameData } = useGlobal();
+  const { gameData, balance } = useGlobal();
   const { cluster } = useAuth();
   const { alertError, alertSuccess } = useAlert();
   const [chargeLoading, setChargeLoading] = useState<boolean>(false);
@@ -78,6 +78,15 @@ const Detail: FC<Props> = ({ user, loading }) => {
           const wallet = window.solana;
 
           if (publicKey && gameData.gameId && gameData.programId && gameData.tokenAddress) {
+            if (
+              balance?.value &&
+              new Decimal(depositValue).toNumber() > new Decimal(balance.value).toNumber()
+            ) {
+              onClose();
+              alertError('Token balance is not enough to deposit');
+              return;
+            }
+
             const gameId = new PublicKey(gameData.gameId);
             setChargeLoading(true);
             try {

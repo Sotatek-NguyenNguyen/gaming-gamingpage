@@ -4,6 +4,7 @@ import { userMintNFTArweaveUploadAction, userMintNFTAction } from '../../api/use
 import { Connection, Transaction } from '@solana/web3.js';
 import { UserMintNFTArweaveUploadResponse } from '../../utils/interface';
 import { renderTokenBalance } from '../../utils/helper';
+import { useAlert } from '../../hooks';
 // import Spinner from '../shared/Spinner';
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connection }) => {
+  const { alertError, alertSuccess } = useAlert();
   const [currentState, setCurrentState] = useState<number>(1);
   const [txId, setTxId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -49,7 +51,13 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
           const arweaveUploadResponse = await userMintNFTArweaveUploadAction({
             gameItemId: inputItemIdElement.current.value,
           });
-
+          if (arweaveUploadResponse?.message) {
+            if (arweaveUploadResponse.message === 'GAME_ITEM_IS_MINTED') {
+              alertError('Item was minted before and cannot be request for minting again');
+            } else {
+              alertError('Item ID is invalid or not found');
+            }
+          }
           const userTx = Transaction.from(
             Buffer.from(arweaveUploadResponse.serializedTx, 'base64'),
           );
@@ -59,6 +67,8 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
           setArweaveUploaded(arweaveUploadResponse);
           setTxId(signature);
           setCurrentState(2);
+        } else if (!inputItemIdElement.current.value) {
+          alertError('ItemID is required');
         }
       } else if (currentState === 2) {
         if (connection && signTransaction && arweaveUploaded && arweaveUploaded?.nftItemId) {
@@ -426,7 +436,7 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                   ) : (
                     ''
                   )}
-                  <div className="mt-5 text-primary-800">Royalties Percentage:</div>
+                  {/* <div className="mt-5 text-primary-800">Royalties Percentage:</div>
                   <input
                     type="text"
                     className="bg-primary-800 mt-2 bg-opacity-50 rounded-full outline-none text-white truncate py-3 px-7 w-full"
@@ -435,10 +445,10 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
                       2,
                     )}
                     readOnly
-                  />
+                  /> */}
                   <div className="mt-5 text-primary-800">
-                    Cost to Create: $
-                    {renderTokenBalance(arweaveUploaded?.metadata?.costToCreate, 2)}
+                    Cost to Create: {renderTokenBalance(arweaveUploaded?.metadata?.costToCreate, 6)}{' '}
+                    SOL
                   </div>
                 </>
               )}

@@ -28,6 +28,14 @@ const DepositModal: FC<Props> = ({
     }
   };
 
+  const onValidateInput = (evt: { target: HTMLInputElement }) => {
+    if (evt.target?.value) {
+      const t = evt.target.value;
+      evt.target.value =
+        t.indexOf('.') >= 0 ? t.substr(0, t.indexOf('.')) + t.substr(t.indexOf('.'), 7) : t;
+    }
+  };
+
   return (
     <BaseModal
       dense
@@ -58,6 +66,7 @@ const DepositModal: FC<Props> = ({
               className="bg-white rounded-full outline-none py-3 pl-7 pr-24 w-full"
               ref={inputElement}
               onKeyDown={(evt) => ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()}
+              onInput={(e: React.FormEvent<HTMLInputElement>) => onValidateInput(e)}
             />
             {tokenCode && (
               <span className="flex justify-center items-center rounded-full px-4 font-semibold text-base absolute h-10 top-1/2 right-1 transform bg-primary-300 text-white -translate-y-1/2">
