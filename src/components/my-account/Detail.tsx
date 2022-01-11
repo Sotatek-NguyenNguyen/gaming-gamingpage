@@ -169,7 +169,8 @@ const Detail: FC<Props> = ({ user, loading }) => {
             }
             setChargeLoading(true);
             try {
-              const serverTx = await userWithdrawAction({ amount });
+              const numWithdraw = amount * Math.pow(10, gameData.tokenDecimals);
+              const serverTx = await userWithdrawAction({ amount: numWithdraw });
 
               const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
               const signed = await signTransaction(userTx);
