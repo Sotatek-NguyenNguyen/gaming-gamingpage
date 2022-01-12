@@ -44,9 +44,9 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
   }, [mintingState, runTimer]);
 
   const handleCheckAvailability = async () => {
-    try {
-      if (currentState === 1) {
-        if (connection && signTransaction && inputItemIdElement.current.value) {
+    if (currentState === 1) {
+      if (connection && signTransaction && inputItemIdElement.current.value) {
+        try {
           setLoading(true);
           const arweaveUploadResponse = await userMintNFTArweaveUploadAction({
             gameItemId: inputItemIdElement.current.value,
@@ -67,11 +67,16 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
           setArweaveUploaded(arweaveUploadResponse);
           setTxId(signature);
           setCurrentState(2);
-        } else if (!inputItemIdElement.current.value) {
-          alertError('ItemID is required');
+        } catch (error) {
+          console.error(error);
+          setLoading(false);
         }
-      } else if (currentState === 2) {
-        if (connection && signTransaction && arweaveUploaded && arweaveUploaded?.nftItemId) {
+      } else if (!inputItemIdElement.current.value) {
+        alertError('ItemID is required');
+      }
+    } else if (currentState === 2) {
+      if (connection && signTransaction && arweaveUploaded && arweaveUploaded?.nftItemId) {
+        try {
           setLoading(true);
           setCurrentState(3);
           setRunTimer(true);
@@ -83,18 +88,22 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
           const signed = await signTransaction(userTx);
           const signature = await connection.sendRawTransaction(signed.serialize());
           await connection.confirmTransaction(signature);
-          console.log(signature);
           setMintingState(8);
           if (onClose) {
             setTimeout(() => {
+              alertSuccess('Minted successfully');
               onClose();
             }, 3000);
           }
+        } catch (error) {
+          console.error(error);
+          alertError('Transaction Canceled');
+          if (onClose) {
+            onClose();
+          }
+          setLoading(false);
         }
       }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
     }
     setLoading(false);
   };
