@@ -105,7 +105,7 @@ const TransactionTable: React.FC<Props> = ({
                   <td className="px-5 pl-6 py-6 w-1/6">
                     {roundNumberByDecimal(
                       new Decimal(amount).dividedBy(Decimal.pow(10, numDecimal).toNumber()),
-                      2,
+                      6,
                     ).toNumber()}
                   </td>
                   <td className="px-5 py-6 w-1/5 truncate">{note}</td>
