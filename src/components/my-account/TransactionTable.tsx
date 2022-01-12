@@ -62,8 +62,6 @@ const TransactionTable: React.FC<Props> = ({
     switch (status) {
       case 'admin_deduct':
         return 'Deducted';
-      case 'withdrawn':
-        return 'Withdraw';
       case 'admin_grant':
         return 'Granted';
       case 'deposit':
