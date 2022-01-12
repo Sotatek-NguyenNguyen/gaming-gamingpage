@@ -78,6 +78,7 @@ export interface ITransactionFilter {
 }
 
 export interface UserMintNFTArweaveUploadResponse {
+  message?: any;
   serializedTx: string;
   nftItemId: string;
   metadata: ArweaveMetaData;

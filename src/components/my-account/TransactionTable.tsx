@@ -1,7 +1,10 @@
 import React from 'react';
 import { UserTransactionsResponse } from './../../utils/interface';
 import Paginations from '../shared/Paginations';
+import Decimal from 'decimal.js';
 import moment from 'moment';
+import { useGlobal } from '../../hooks';
+import { roundNumberByDecimal } from '../../utils/helper';
 
 interface Props {
   paginatedTransaction?: UserTransactionsResponse | null;
@@ -23,6 +26,8 @@ const TransactionTable: React.FC<Props> = ({
   verifiedInGameAccount,
 }) => {
   const { data, page, /* pageSize, total, */ totalPage } = paginatedTransaction || {};
+  const { gameData } = useGlobal();
+  const numDecimal = gameData?.tokenDecimals || 6;
   const handleMove = async (page: number) => {
     await movePage(page);
   };
@@ -74,7 +79,7 @@ const TransactionTable: React.FC<Props> = ({
         <table className="w-full table-fixed text-base">
           <thead className={`border-b border-white border-opacity-15 text-white`}>
             <tr className="text-lg text-left">
-              <th className="w-1/4 px-5 py-5 font-semibold">Deposit Address</th>
+              <th className="w-1/4 px-5 py-5 font-semibold">Wallet Address</th>
               <th className="w-1/6 px-4 pl-6 py-5 font-semibold">Amount</th>
               <th className="w-1/5 px-4 py-5 font-semibold">Transaction Note</th>
               <th className="w-1/5 px-4 py-5 font-semibold">Created on</th>
@@ -97,7 +102,12 @@ const TransactionTable: React.FC<Props> = ({
                   }`}
                 >
                   <td className="px-5 py-6 w-1/4 truncate">{transactionId}</td>
-                  <td className="px-5 pl-6 py-6 w-1/6">{amount}</td>
+                  <td className="px-5 pl-6 py-6 w-1/6">
+                    {roundNumberByDecimal(
+                      new Decimal(amount).dividedBy(Decimal.pow(10, numDecimal).toNumber()),
+                      6,
+                    ).toNumber()}
+                  </td>
                   <td className="px-5 py-6 w-1/5 truncate">{note}</td>
                   <td className="px-5 py-6 w-1/5">
                     {moment(createdAt).local().format('YYYY-MM-DD HH:mm:ss')}

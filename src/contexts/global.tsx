@@ -1,10 +1,7 @@
-import { clockSysvarAccount } from '@gamify/onchain-program-sdk';
-import { u64 } from '@solana/spl-token';
-import { useConnection } from '@solana/wallet-adapter-react';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ClockLayout } from '../sdk/layout';
+// import { ClockLayout } from '../sdk/layout';
 import { formatNumber, transformLamportsToSOL } from '../utils/helper';
 import { getGameInfo } from '../api/game';
 import { GameInfoResponse } from '../utils/interface';
@@ -16,9 +13,8 @@ interface GlobalState {
     formatted: string | null;
   };
   loading: boolean;
-  isInitTimestamp: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
-  setAccountBalance: (balance: number | null) => void;
+  setAccountBalance: (balance: number | 0) => void;
   gameData: GameInfoResponse;
 }
 
@@ -29,7 +25,6 @@ const GlobalContext = createContext<GlobalState>({
     formatted: null,
   },
   loading: false,
-  isInitTimestamp: false,
   // tslint:disable-next-line:no-empty
   setLoading: () => {},
   // tslint:disable-next-line:no-empty
@@ -52,7 +47,6 @@ const GlobalContext = createContext<GlobalState>({
 });
 
 export const GlobalProvider: React.FC = ({ children }) => {
-  const { connection } = useConnection();
   const [loading, setLoading] = useState(false);
   const [now, setNow] = useState(() => {
     return new Decimal(moment().unix()).times(1000).toNumber();
@@ -64,7 +58,6 @@ export const GlobalProvider: React.FC = ({ children }) => {
     value: null,
     formatted: null,
   });
-  const [isInitTimestamp, setIsInitTimestamp] = useState(false);
   const [gameData, setGameData] = useState<GameInfoResponse>({
     name: '',
     videoIntroURL: '',
@@ -82,20 +75,6 @@ export const GlobalProvider: React.FC = ({ children }) => {
   });
 
   useEffect(() => {
-    const fetchNow = () => {
-      connection
-        .getAccountInfo(clockSysvarAccount)
-        .then((result) => {
-          const decoded = ClockLayout.decode(result?.data);
-          const unixTimestamp = u64.fromBuffer(decoded.unix_timestamp).toString();
-
-          setNow(new Decimal(unixTimestamp).toNumber());
-        })
-        .finally(() => {
-          setIsInitTimestamp(true);
-        });
-    };
-
     const fetchGameData = async () => {
       try {
         setLoading(true);
@@ -108,7 +87,6 @@ export const GlobalProvider: React.FC = ({ children }) => {
     };
 
     fetchGameData();
-    // fetchNow();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -122,12 +100,12 @@ export const GlobalProvider: React.FC = ({ children }) => {
     };
   }, []);
 
-  const setAccountBalance = (accBalance: number | null) => {
-    const balanceResult = transformLamportsToSOL(accBalance || 0);
+  const setAccountBalance = (accBalance: number | 0) => {
+    // const balanceResult = transformLamportsToSOL(accBalance || 0);
 
     setBalance({
-      value: balanceResult,
-      formatted: formatNumber.format(balanceResult) as string,
+      value: accBalance,
+      formatted: formatNumber.format(accBalance) as string,
     });
   };
 
@@ -137,7 +115,6 @@ export const GlobalProvider: React.FC = ({ children }) => {
         now,
         balance,
         loading,
-        isInitTimestamp,
         setLoading,
         setAccountBalance,
         gameData,

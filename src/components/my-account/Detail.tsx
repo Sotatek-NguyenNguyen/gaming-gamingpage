@@ -20,10 +20,11 @@ import WithdrawModal from './WithdrawModal';
 import MintNFTModal from './MintNFTModal';
 import VerifyInGameAccountModal from './VerifyInGameAccountModal';
 import { UserDetailResponse } from '../../utils/interface';
-import { useGlobal, useAlert } from '../../hooks';
+import { useGlobal, useAlert, useAuth } from '../../hooks';
 import { IDL } from '../../utils/treasury';
-import { renderTokenBalance } from '../../utils/helper';
+import { roundNumberByDecimal } from '../../utils/helper';
 import { userWithdrawAction } from '../../api/user';
+import Decimal from 'decimal.js';
 
 interface Props {
   user?: UserDetailResponse;
@@ -42,11 +43,21 @@ export const expiredTime = 600; // 10 mins
 const Detail: FC<Props> = ({ user, loading }) => {
   const { publicKey, signTransaction, signMessage } = useWallet();
   // const { connection } = useConnection();
-  const { gameData } = useGlobal();
+  const { gameData, balance } = useGlobal();
+  const { cluster } = useAuth();
   const { alertError, alertSuccess } = useAlert();
   const [chargeLoading, setChargeLoading] = useState<boolean>(false);
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
   const isAccountVerified = useMemo(() => user?.accountInGameId, [user]);
+  const userBalance = useMemo(() => {
+    if (user?.balance) {
+      return roundNumberByDecimal(
+        new Decimal(user.balance).dividedBy(Decimal.pow(10, gameData.tokenDecimals).toNumber()),
+        6,
+      ).toNumber();
+    }
+    return 0;
+  }, [user, gameData]);
 
   const opts: ConfirmOptions = {
     preflightCommitment: 'processed' as Commitment,
@@ -56,7 +67,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const { SystemProgram } = web3;
   const wallet = window.solana;
 
-  const network = clusterApiUrl('devnet');
+  const network = clusterApiUrl(cluster);
   const connection = new Connection(network, opts.preflightCommitment);
   const provider = new Provider(connection, wallet, opts);
 
@@ -76,6 +87,15 @@ const Detail: FC<Props> = ({ user, loading }) => {
           const wallet = window.solana;
 
           if (publicKey && gameData.gameId && gameData.programId && gameData.tokenAddress) {
+            if (
+              balance?.value &&
+              new Decimal(depositValue).toNumber() > new Decimal(balance.value).toNumber()
+            ) {
+              onClose();
+              alertError('Token balance is not enough to deposit');
+              return;
+            }
+
             const gameId = new PublicKey(gameData.gameId);
             setChargeLoading(true);
             try {
@@ -139,6 +159,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             playerKey={base58}
             chargeLoading={chargeLoading}
             gameWallet={gameData.walletAddress}
+            tokenCode={gameData.tokenCode}
           />
         );
       },
@@ -149,10 +170,16 @@ const Detail: FC<Props> = ({ user, loading }) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         const handleWithdraw = async (amount: number) => {
-          if (signTransaction) {
+          if (signTransaction && user?.balance) {
+            if (new Decimal(amount).toNumber() > new Decimal(userBalance).toNumber()) {
+              onClose();
+              alertError('Withdraw amount cannot be greater than Actual game balance');
+              return;
+            }
             setChargeLoading(true);
             try {
-              const serverTx = await userWithdrawAction({ amount });
+              const numWithdraw = amount * Math.pow(10, gameData.tokenDecimals);
+              const serverTx = await userWithdrawAction({ amount: numWithdraw });
 
               const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
               const signed = await signTransaction(userTx);
@@ -179,6 +206,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             playerKey={base58}
             chargeLoading={chargeLoading}
             gameWallet={gameData.walletAddress}
+            tokenCode={gameData.tokenCode}
           />
         );
       },
@@ -216,7 +244,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
             return (
               <VerifyInGameAccountModal
                 onClose={onClose}
-                confirmText="Confirm"
+                confirmText="Close"
                 otpToken={otpToken}
                 logoUrl={gameData.logoURL}
                 expiredTime={expiredTime}
@@ -237,16 +265,14 @@ const Detail: FC<Props> = ({ user, loading }) => {
     <div className="bg-primary-100">
       <div className="layout-container pt-12 pb-14">
         <div className="text-center text-white bg-primary-200 p-8 rounded-2xl font-bold">
-          <h2 className="text-2xl text-primary-800">GAME X BALANCE</h2>
+          <h2 className="text-2xl text-primary-800 uppercase">{`${gameData.name} X BALANCE`}</h2>
           <div className="mt-4 flex items-center justify-center gap-3">
             <span className="text-4xl">{gameData.tokenCode}</span>
             {loading ? (
               <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
             ) : (
               <span className="text-4xl">
-                {user && user?.balance !== 0
-                  ? renderTokenBalance(user.balance / (10 * gameData.tokenDecimals), 2)
-                  : user?.balance}
+                {user && user?.balance !== 0 ? userBalance : user?.balance}
               </span>
             )}
           </div>

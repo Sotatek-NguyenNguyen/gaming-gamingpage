@@ -8,14 +8,12 @@ const CurrentAccountBadge: FC = ({ children }) => {
   const { publicKey, wallet, connected, disconnect, signMessage, adapter } = useWallet();
   const { visible, setVisible } = useWalletModal();
   const { login, logout, isAuthenticated } = useAuth();
-  const { setAccountBalance, balance } = useGlobal();
+  const { setAccountBalance, balance, gameData } = useGlobal();
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showErr, setShowErr] = useState(false);
-
   const { alertInfo, alertError } = useAlert();
   const { refreshWalletBalance } = useSmartContract();
-
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
 
   const content = useMemo(() => {
@@ -53,14 +51,14 @@ const CurrentAccountBadge: FC = ({ children }) => {
         setLoading(false);
       } catch (err) {
         setLoading(false);
-        setAccountBalance(null);
+        setAccountBalance(0);
       }
     };
 
     if (connected) {
       initBalance();
     } else {
-      setAccountBalance(null);
+      setAccountBalance(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected, isAuthenticated]);
@@ -115,19 +113,19 @@ const CurrentAccountBadge: FC = ({ children }) => {
   }
 
   return (
-    <div className="flex items-center justify-between w-64 h-12 overflow-hidden text-sm rounded-full shadow-md border border-primary-300">
+    <div className="flex items-center justify-between min-w-max h-12 overflow-hidden text-sm rounded-full shadow-md border border-primary-300">
       <button
         onClick={onDisconnect}
         className="flex items-center justify-center p-2 mx-2 bg-primary-400 rounded-full"
       >
         <FaTimes className="z-20 text-primary-100" />
       </button>
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full font-semibold">
         {loading ? (
           <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
         ) : (
           <span className="ml-auto text-sm tracking-normal text-white">
-            {balance?.formatted} SOL
+            {balance?.formatted} {gameData?.tokenCode}
           </span>
         )}
         <div
