@@ -49,6 +49,15 @@ const Detail: FC<Props> = ({ user, loading }) => {
   const [chargeLoading, setChargeLoading] = useState<boolean>(false);
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
   const isAccountVerified = useMemo(() => user?.accountInGameId, [user]);
+  const userBalance = useMemo(() => {
+    if (user?.balance) {
+      return roundNumberByDecimal(
+        new Decimal(user.balance).dividedBy(Decimal.pow(10, gameData.tokenDecimals).toNumber()),
+        6,
+      ).toNumber();
+    }
+    return 0;
+  }, [user, gameData]);
 
   const opts: ConfirmOptions = {
     preflightCommitment: 'processed' as Commitment,
@@ -162,7 +171,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
       customUI: ({ onClose }) => {
         const handleWithdraw = async (amount: number) => {
           if (signTransaction && user?.balance) {
-            if (new Decimal(amount).toNumber() > new Decimal(user.balance).toNumber()) {
+            if (new Decimal(amount).toNumber() > new Decimal(userBalance).toNumber()) {
               onClose();
               alertError('Withdraw amount cannot be greater than Actual game balance');
               return;
@@ -256,21 +265,14 @@ const Detail: FC<Props> = ({ user, loading }) => {
     <div className="bg-primary-100">
       <div className="layout-container pt-12 pb-14">
         <div className="text-center text-white bg-primary-200 p-8 rounded-2xl font-bold">
-          <h2 className="text-2xl text-primary-800">GAME X BALANCE</h2>
+          <h2 className="text-2xl text-primary-800 uppercase">{`${gameData.name} X BALANCE`}</h2>
           <div className="mt-4 flex items-center justify-center gap-3">
             <span className="text-4xl">{gameData.tokenCode}</span>
             {loading ? (
               <span className="h-3 bg-gray-300 rounded-full w-14 animate-pulse" />
             ) : (
               <span className="text-4xl">
-                {user && user?.balance !== 0
-                  ? roundNumberByDecimal(
-                      new Decimal(user.balance).dividedBy(
-                        Decimal.pow(10, gameData.tokenDecimals).toNumber(),
-                      ),
-                      2,
-                    ).toNumber()
-                  : user?.balance}
+                {user && user?.balance !== 0 ? userBalance : user?.balance}
               </span>
             )}
           </div>
