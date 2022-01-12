@@ -67,8 +67,11 @@ const MintNFTModal: FC<Props> = ({ onClose, playerKey, signTransaction, connecti
           setArweaveUploaded(arweaveUploadResponse);
           setTxId(signature);
           setCurrentState(2);
-        } catch (error) {
-          console.error(error);
+        } catch (error: any) {
+          if (error && error?.message === 'User rejected the request.' && onClose) {
+            alertError('Transaction Canceled');
+            onClose();
+          }
           setLoading(false);
         }
       } else if (!inputItemIdElement.current.value) {
