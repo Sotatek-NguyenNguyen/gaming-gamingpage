@@ -124,7 +124,11 @@ const TransactionTable: React.FC<Props> = ({
                 </tr>
               ))
             ) : (
-              <tr className="h-10" />
+              <tr>
+                <td className="py-10 text-base text-white text-center" colSpan={6}>
+                  No transaction available
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
