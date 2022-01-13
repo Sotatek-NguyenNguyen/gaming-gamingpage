@@ -86,14 +86,15 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, [wallet, walletPublicKey]);
 
   const getAccountTokenInfo = async () => {
-    if (gameData?.tokenAddress && publicKey) {
+    if (gameData?.tokenAddress && walletPublicKey) {
       try {
         const tokenAccount = await Token.getAssociatedTokenAddress(
           ASSOCIATED_TOKEN_PROGRAM_ID,
           TOKEN_PROGRAM_ID,
           new PublicKey(gameData.tokenAddress),
-          publicKey,
+          walletPublicKey,
         );
+        console.log(tokenAccount);
         const tokenAccountBalance = await connection.getTokenAccountBalance(tokenAccount);
         if (tokenAccountBalance && tokenAccountBalance.value) {
           const balanceResult = renderTokenBalance(tokenAccountBalance.value.uiAmount, 2);
@@ -110,11 +111,11 @@ export const AuthProvider: React.FC = ({ children }) => {
   };
 
   useEffect(() => {
-    if (publicKey) {
+    if (walletPublicKey) {
       getAccountTokenInfo();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey]);
+  }, [walletPublicKey]);
 
   const changeCluster = (newCluster: Cluster): void => {
     setCluster(newCluster);
