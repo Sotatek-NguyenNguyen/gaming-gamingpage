@@ -94,13 +94,6 @@ export const AuthProvider: React.FC = ({ children }) => {
           new PublicKey(gameData.tokenAddress),
           walletPublicKey,
         );
-        console.log(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
-          TOKEN_PROGRAM_ID,
-          new PublicKey(gameData.tokenAddress),
-          walletPublicKey,
-          tokenAccount,
-        );
         const tokenAccountBalance = await connection.getTokenAccountBalance(tokenAccount);
         if (tokenAccountBalance && tokenAccountBalance.value) {
           const balanceResult = renderTokenBalance(tokenAccountBalance.value.uiAmount, 2);
