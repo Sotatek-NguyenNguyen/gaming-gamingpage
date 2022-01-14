@@ -8,6 +8,7 @@ import * as bs58 from 'bs58';
 import { signatureMsgAuth, loginAuth } from '../api/auth';
 import { envConfig } from '../configs';
 import { Token, ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { useAlert } from '../hooks';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -50,6 +51,7 @@ const AuthContext = createContext<AuthState>(defaultState);
 export const AuthProvider: React.FC = ({ children }) => {
   const { wallet, publicKey: walletPublicKey } = useWallet();
   const { gameData } = useGlobal();
+  const { alertError } = useAlert();
   const [publicKey, setPublicKey] = useLocalStorageState('public_key');
   const [accessToken, setAccessToken] = useLocalStorageState('access_token');
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -82,6 +84,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       return true;
     };
+
     setIsAuthenticated(getAuthenStatus());
   }, [wallet, walletPublicKey]);
 
@@ -137,6 +140,9 @@ export const AuthProvider: React.FC = ({ children }) => {
           address: walletAddress.toString(),
           signature: Buffer.from(signature),
         });
+        if (tokenResponse?.message === 'ONLY_ROLE_USER_ALLOWED') {
+          alertError('Connected Address is an Admin, restricted access is applied');
+        }
         token = tokenResponse.accessToken;
       } else {
         /* token = await createTokenWithWalletAdapter(adapter._wallet); */
@@ -147,6 +153,9 @@ export const AuthProvider: React.FC = ({ children }) => {
           address: walletAddress.toString(),
           signature: Buffer.from(signature),
         });
+        if (tokenResponse?.message === 'ONLY_ROLE_USER_ALLOWED') {
+          alertError('Connected Address is an Admin, restricted access is applied');
+        }
         token = tokenResponse.accessToken;
       }
       if (token) {

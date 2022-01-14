@@ -9,6 +9,7 @@ export interface ISolletChain {
 
 export interface LoginResponse {
   accessToken: string;
+  message?: string;
 }
 
 export interface SignatureResponse {
