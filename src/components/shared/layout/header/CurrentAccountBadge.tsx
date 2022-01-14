@@ -60,6 +60,16 @@ const CurrentAccountBadge: FC = ({ children }) => {
     } else {
       setAccountBalance(0);
     }
+
+    let timerId: any;
+    if (connected && isAuthenticated) {
+      timerId = setInterval(() => {
+        refreshWalletBalance();
+      }, 10000);
+    } else {
+      clearInterval(timerId);
+    }
+    return () => clearInterval(timerId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected, isAuthenticated]);
 
