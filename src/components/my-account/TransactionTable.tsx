@@ -77,7 +77,7 @@ const TransactionTable: React.FC<Props> = ({
         <table className="w-full table-fixed text-base">
           <thead className={`border-b border-white border-opacity-15 text-white`}>
             <tr className="text-lg text-left">
-              <th className="w-1/4 px-5 py-5 font-semibold">Wallet Address</th>
+              <th className="w-1/4 px-5 py-5 font-semibold">Transaction ID</th>
               <th className="w-1/6 px-4 pl-6 py-5 font-semibold">Amount</th>
               <th className="w-1/5 px-4 py-5 font-semibold">Transaction Note</th>
               <th className="w-1/5 px-4 py-5 font-semibold">Created on</th>
@@ -101,10 +101,11 @@ const TransactionTable: React.FC<Props> = ({
                 >
                   <td className="px-5 py-6 w-1/4 truncate">{transactionId}</td>
                   <td className="px-5 pl-6 py-6 w-1/6">
-                    {roundNumberByDecimal(
-                      new Decimal(amount).dividedBy(Decimal.pow(10, numDecimal).toNumber()),
-                      6,
-                    ).toNumber()}
+                    {amount &&
+                      roundNumberByDecimal(
+                        new Decimal(amount).dividedBy(Decimal.pow(10, numDecimal).toNumber()),
+                        6,
+                      ).toNumber()}
                   </td>
                   <td className="px-5 py-6 w-1/5 truncate">{note}</td>
                   <td className="px-5 py-6 w-1/5">

@@ -100,7 +100,7 @@ export const extractPoolData = (
 
 export const getCurrentChain = (): ISolletChain => {
   let matched: ISolletChain | null;
-  const defaultChain = SOLLET_CHAINS.find((slc) => slc.name === ESolletEnv.TESTNET)!;
+  const defaultChain = SOLLET_CHAINS.find((slc) => slc.name === ESolletEnv.DEVNET)!;
 
   if (SOLLET_ENV2 && (SOLLET_ENV2 as ESolletEnv)) {
     matched = SOLLET_CHAINS.find((slc) => slc.name === SOLLET_ENV2) || null;

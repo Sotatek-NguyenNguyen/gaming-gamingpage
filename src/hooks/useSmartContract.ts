@@ -13,7 +13,7 @@ export function useSmartContract() {
   const { setAccountBalance } = useContext(GlobalContext);
   const { alertError } = useAlert();
   const { connection } = useConnection();
-  const { publicKey, signTransaction } = useWallet();
+  const { publicKey } = useWallet();
   const { gameData } = useGlobal();
 
   const handleOnchainError = (err: any) => {

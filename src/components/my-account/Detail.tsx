@@ -265,7 +265,7 @@ const Detail: FC<Props> = ({ user, loading }) => {
     <div className="bg-primary-100">
       <div className="layout-container pt-12 pb-14">
         <div className="text-center text-white bg-primary-200 p-8 rounded-2xl font-bold">
-          <h2 className="text-2xl text-primary-800 uppercase">{`${gameData.name} X BALANCE`}</h2>
+          <h2 className="text-2xl text-primary-800 uppercase">{`${gameData.name} BALANCE`}</h2>
           <div className="mt-4 flex items-center justify-center gap-3">
             <span className="text-4xl">{gameData.tokenCode}</span>
             {loading ? (
