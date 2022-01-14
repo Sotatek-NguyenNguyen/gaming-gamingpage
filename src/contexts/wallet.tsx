@@ -28,7 +28,15 @@ export const WalletConnectionProvider: FC<{ children: ReactNode }> = ({ children
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect onError={() => window.location.reload()}>
+      <WalletProvider
+        wallets={wallets}
+        autoConnect
+        onError={(e) => {
+          if (e.name === 'WalletDisconnectedError') {
+            window.location.reload();
+          }
+        }}
+      >
         {children}
       </WalletProvider>
     </ConnectionProvider>
