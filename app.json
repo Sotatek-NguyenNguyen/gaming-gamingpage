@@ -1,9 +1,9 @@
 {
   "apps": [
     {
-      "name": "gamify-gc-gamming-production-4001",
+      "name": "gamify-gc-gaming-staging-4011",
       "script": "npm",
-      "args": "run start-4001"
+      "args": "run start-staging-4011"
     }
   ]
 }

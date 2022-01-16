@@ -8,8 +8,6 @@ const API_URL_SMART_CONTRACT =
 const SOLLET_ENV =
   (process.env.NEXT_PUBLIC_SOLLET_ENV as WalletAdapterNetwork) || WalletAdapterNetwork.Devnet;
 const SOLANA_EXPLORER_URL = 'https://explorer.solana.com';
-const ISOLA_TOKEN_ADDRESS = new PublicKey(process.env.NEXT_PUBLIC_ISOLA_TOKEN_ADDRESS!);
-const ISOLA_TOKEN_NAME = process.env.NEXT_PUBLIC_ISOLA_TOKEN_NAME as string;
 const SOLLET_ENV2 = (process.env.REACT_APP_NETWORK_CLUSTER as Cluster) || 'devnet';
 
 export const envConfig = {
@@ -18,7 +16,5 @@ export const envConfig = {
   API_URL_SMART_CONTRACT,
   SOLLET_ENV,
   SOLANA_EXPLORER_URL,
-  ISOLA_TOKEN_ADDRESS,
-  ISOLA_TOKEN_NAME,
   SOLLET_ENV2,
 };
