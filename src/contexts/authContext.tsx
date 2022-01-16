@@ -127,6 +127,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     walletAddress: PublicKey,
     signMessage?: (message: Uint8Array) => Promise<Uint8Array>,
     adapter?: any,
+    disconnect?: any,
   ): Promise<void> => {
     try {
       let token;
@@ -164,6 +165,9 @@ export const AuthProvider: React.FC = ({ children }) => {
         setAccessToken(token);
       }
     } catch (e) {
+      if (disconnect) {
+        disconnect();
+      }
       setIsAuthenticated(false);
       setPublicKey(null);
       throw new Error('Can not login, please try again');
