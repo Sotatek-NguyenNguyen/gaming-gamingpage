@@ -15,7 +15,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
   const { alertInfo, alertError } = useAlert();
   const { refreshWalletBalance } = useSmartContract();
   const base58 = useMemo(() => publicKey?.toBase58(), [publicKey]);
-  console.log(connected);
+
   const content = useMemo(() => {
     if (children) return children;
     if (!wallet || !base58) return null;
@@ -45,7 +45,7 @@ const CurrentAccountBadge: FC = ({ children }) => {
       try {
         setLoading(true);
         if (!isAuthenticated) {
-          await login(publicKey, signMessage, adapter);
+          await login(publicKey, signMessage, adapter, disconnect);
         }
         await refreshWalletBalance();
         setLoading(false);
