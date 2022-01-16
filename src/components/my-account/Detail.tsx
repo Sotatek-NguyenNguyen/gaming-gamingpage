@@ -140,11 +140,15 @@ const Detail: FC<Props> = ({ user, loading }) => {
               );
               alertSuccess('Deposited successfully');
               // console.log('signature: ', signature);
-            } catch (error) {
+            } catch (error: any) {
               console.error(error);
               setChargeLoading(false);
               onClose();
-              alertError('Transaction Canceled');
+              if (error.message === 'Failed to find account') {
+                alertError('Token balance is not enough to deposit');
+              } else {
+                alertError('Transaction Canceled');
+              }
             }
             setChargeLoading(false);
             onClose();
