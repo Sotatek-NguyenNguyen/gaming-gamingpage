@@ -1,8 +1,16 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
+First, clone file *.env.example* to *.env.local* and change values, example:
 
-First, run the development server:
+  ```
+  NEXT_PUBLIC_BASE_URL=https://staging-web.gamifyclub.com
+  NEXT_PUBLIC_API_URL_BACKEND=https://api-gaming.dev.gamifyclub.com
+  NEXT_PUBLIC_API_URL_SMART_CONTRACT=https://api.devnet.solana.com
+  NEXT_PUBLIC_SOLLET_ENV=devnet
+  ```
+
+Second, run the development server:
 
 ```bash
 npm run dev
@@ -12,23 +20,45 @@ yarn dev
 
 Open [http://localhost:3007](http://localhost:3007) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Deploy
+- Clone this repository to your server
+- clone file *.env.example* to *.env.local* and change values, example:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+  ```
+  NEXT_PUBLIC_BASE_URL=https://staging-web.gamifyclub.com
+  NEXT_PUBLIC_API_URL_BACKEND=https://api-gaming.dev.gamifyclub.com
+  NEXT_PUBLIC_API_URL_SMART_CONTRACT=https://api.devnet.solana.com
+  NEXT_PUBLIC_SOLLET_ENV=devnet
+  ```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Deploy with pm2
 
-## Learn More
+- Ensure pm2 has installed on your server
+- Add script to run your specific port to `package.json`. Below, I added script `"start-staging-4011": "next start -p 4011"` to run code on port **4011**
 
-To learn more about Next.js, take a look at the following resources:
+  ```
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "start-staging-4011": "next start -p 4011",
+  "lint": "next lint"
+  ```
+- Next, open file app.json to update `args` param become the script added to `package.json`. Example:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  ```
+  "args": "run start-staging-4011"
+  ```
+- The final step, run command to deploy:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+  ```
+  pm2 restart app.json
+  ```
 
-## Deploy on Vercel
+### Deploy with docker
+- Ensure docker has installed on your server
+- Update files **Dockerfile** and **docker-compose.yml** to use your desired port
+- Run command:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+  ```
+  docker-compose up --build -d
+  ```
