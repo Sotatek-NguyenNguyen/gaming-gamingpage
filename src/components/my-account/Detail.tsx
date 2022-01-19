@@ -141,11 +141,17 @@ const Detail: FC<Props> = ({ user, loading }) => {
               alertSuccess('Deposited successfully');
               // console.log('signature: ', signature);
             } catch (error: any) {
+              console.log(error.message);
               console.error(error);
               setChargeLoading(false);
               onClose();
               if (error.message === 'Failed to find account') {
                 alertError('Token balance is not enough to deposit');
+              } else if (
+                error.message ===
+                'failed to send transaction: Transaction simulation failed: Attempt to debit an account but found no record of a prior credit.'
+              ) {
+                alertError('Insufficient balance');
               } else {
                 alertError('Transaction Canceled');
               }
