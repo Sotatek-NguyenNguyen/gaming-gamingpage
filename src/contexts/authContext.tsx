@@ -1,14 +1,14 @@
 import { createContext, useEffect, useState } from 'react';
 import { Cluster, PublicKey } from '@solana/web3.js';
-import { useConnection, useLocalStorageState } from '../hooks';
+import { useConnection, useLocalStorageState, useGlobal } from '../hooks';
 import { formatNumber, transformLamportsToSOL } from '../shared/helper';
-import {
-  isTokenOwnedByAddress,
-  verifyAndDecode,
-  createTokenWithSignMessageFunc,
-  createTokenWithWalletAdapter,
-} from '@gamify/onchain-program-sdk';
+import { renderTokenBalance } from '../utils/helper';
 import { useWallet } from '@solana/wallet-adapter-react';
+import * as bs58 from 'bs58';
+import { signatureMsgAuth, loginAuth } from '../api/auth';
+import { envConfig } from '../configs';
+import { Token, ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { useAlert } from '../hooks';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -22,22 +22,36 @@ interface AuthState {
   changeCluster: (cluster: Cluster) => void;
 }
 
+const { SOLLET_ENV } = envConfig;
+
 const defaultState: AuthState = {
   isAuthenticated: false,
-  cluster: 'devnet',
+  cluster: SOLLET_ENV,
   balance: {
     value: 0,
     formatted: '0',
   },
+  // tslint:disable-next-line:no-empty
   login: async () => {},
+  // tslint:disable-next-line:no-empty
   logout: () => {},
+  // tslint:disable-next-line:no-empty
   changeCluster: () => {},
 };
+
+interface IPayloadWithSignature {
+  address: string;
+  signature: string;
+}
+
+export const expiredTime = 600; // 10 min
 
 const AuthContext = createContext<AuthState>(defaultState);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const { wallet, publicKey: walletPublicKey } = useWallet();
+  const { gameData } = useGlobal();
+  const { alertError } = useAlert();
   const [publicKey, setPublicKey] = useLocalStorageState('public_key');
   const [accessToken, setAccessToken] = useLocalStorageState('access_token');
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -52,7 +66,11 @@ export const AuthProvider: React.FC = ({ children }) => {
     formatted: '0',
   });
   const { connection } = useConnection();
-  const [cluster, setCluster] = useState<Cluster>('devnet');
+  const [cluster, setCluster] = useState<Cluster>(SOLLET_ENV);
+
+  const decodeToken = (token: string): IPayloadWithSignature => {
+    return JSON.parse(bs58.decode(token).toString()) as IPayloadWithSignature;
+  };
 
   useEffect(() => {
     const getAuthenStatus = () => {
@@ -64,35 +82,42 @@ export const AuthProvider: React.FC = ({ children }) => {
         return false;
       }
 
-      if (!isTokenOwnedByAddress(accessToken, publicKey)) {
-        return false;
-      }
-
-      const result = verifyAndDecode(accessToken);
-      if (!result.isValid || result.isExpired) {
-        return false;
-      }
-
       return true;
     };
+
     setIsAuthenticated(getAuthenStatus());
   }, [wallet, walletPublicKey]);
 
-  useEffect(() => {
-    if (publicKey) {
-      connection
-        .getAccountInfo(new PublicKey(publicKey))
-        .then((response) => {
-          const balanceResult = transformLamportsToSOL(response?.lamports!);
+  const getAccountTokenInfo = async () => {
+    if (gameData?.tokenAddress && walletPublicKey) {
+      try {
+        const tokenAccount = await Token.getAssociatedTokenAddress(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          TOKEN_PROGRAM_ID,
+          new PublicKey(gameData.tokenAddress),
+          walletPublicKey,
+        );
+        const tokenAccountBalance = await connection.getTokenAccountBalance(tokenAccount);
+        if (tokenAccountBalance && tokenAccountBalance.value) {
+          const balanceResult = renderTokenBalance(tokenAccountBalance.value.uiAmount, 2);
+
           setBalance({
             value: balanceResult,
             formatted: formatNumber.format(balanceResult) as string,
           });
-        })
-        .catch((err) => console.error(err));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (walletPublicKey) {
+      getAccountTokenInfo();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey]);
+  }, [walletPublicKey]);
 
   const changeCluster = (newCluster: Cluster): void => {
     setCluster(newCluster);
@@ -102,18 +127,47 @@ export const AuthProvider: React.FC = ({ children }) => {
     walletAddress: PublicKey,
     signMessage?: (message: Uint8Array) => Promise<Uint8Array>,
     adapter?: any,
+    disconnect?: any,
   ): Promise<void> => {
     try {
       let token;
       if (signMessage) {
-        token = await createTokenWithSignMessageFunc(signMessage!, walletAddress);
+        /* token = await createTokenWithSignMessageFunc(signMessage!, walletAddress); */
+
+        const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
+        const encodedMessage = new TextEncoder().encode(signatureMsg?.signatureMsg);
+        const signature = await signMessage(encodedMessage);
+        const tokenResponse = await loginAuth({
+          address: walletAddress.toString(),
+          signature: Buffer.from(signature),
+        });
+        if (tokenResponse?.message === 'ONLY_ROLE_USER_ALLOWED') {
+          alertError('Connected Address is an Admin, restricted access is applied');
+        }
+        token = tokenResponse.accessToken;
       } else {
-        token = await createTokenWithWalletAdapter(adapter._wallet);
+        /* token = await createTokenWithWalletAdapter(adapter._wallet); */
+        const signatureMsg = await signatureMsgAuth({ address: walletAddress.toString() });
+        const encodedMessage = new TextEncoder().encode(signatureMsg?.signatureMsg);
+        const { signature } = await adapter._wallet.sign(Buffer.from(encodedMessage), 'object');
+        const tokenResponse = await loginAuth({
+          address: walletAddress.toString(),
+          signature: Buffer.from(signature),
+        });
+        if (tokenResponse?.message === 'ONLY_ROLE_USER_ALLOWED') {
+          alertError('Connected Address is an Admin, restricted access is applied');
+        }
+        token = tokenResponse.accessToken;
       }
-      setIsAuthenticated(true);
-      setPublicKey(walletAddress.toString());
-      setAccessToken(token);
+      if (token) {
+        setIsAuthenticated(true);
+        setPublicKey(walletAddress.toString());
+        setAccessToken(token);
+      }
     } catch (e) {
+      if (disconnect) {
+        disconnect();
+      }
       setIsAuthenticated(false);
       setPublicKey(null);
       throw new Error('Can not login, please try again');

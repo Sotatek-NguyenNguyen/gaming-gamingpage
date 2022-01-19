@@ -1,26 +1,19 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
 import Layout from '../components/shared/Layout';
 import { PageTitle } from '../shared/enum';
 import LoadingScreen from '../components/shared/LoadingScreen';
-import Banner from '../components/shared/Banner';
+import Banner from '../components/home/Banner';
 import FavoriteDescription from '../components/home/FavoriteDescription';
+import { useGlobal } from '../hooks';
 
 const Home: NextPage = () => {
-  const [loading, setLoading] = useState(false);
-
-  /* useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 4000);
-  }, []); */
+  const { gameData, loading } = useGlobal();
 
   return (
     <Layout title={PageTitle.HomePage}>
       <LoadingScreen loading={loading} />
-      <Banner />
-      <FavoriteDescription />
+      <Banner background={gameData?.backgroundURL} />
+      <FavoriteDescription game={gameData} />
     </Layout>
   );
 };

@@ -1,11 +1,10 @@
-import { clockSysvarAccount } from '@gamify/onchain-program-sdk';
-import { u64 } from '@solana/spl-token';
-import { useConnection } from '@solana/wallet-adapter-react';
 import Decimal from 'decimal.js';
 import moment from 'moment';
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ClockLayout } from '../sdk/layout';
+// import { ClockLayout } from '../sdk/layout';
 import { formatNumber, transformLamportsToSOL } from '../utils/helper';
+import { getGameInfo } from '../api/game';
+import { GameInfoResponse } from '../utils/interface';
 
 interface GlobalState {
   now: number;
@@ -13,16 +12,10 @@ interface GlobalState {
     value: number | null;
     formatted: string | null;
   };
-  totalStaked: number;
-  allocationLevel: number;
   loading: boolean;
-  isEnabledVotingFeature: boolean;
-  isInitTimestamp: boolean;
-  setTotalStaked: Dispatch<SetStateAction<number>>;
-  setAllocationLevel: Dispatch<SetStateAction<number>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
-  setAccountBalance: (balance: number | null) => void;
-  setIsEnabledVotingFeature: Dispatch<SetStateAction<boolean>>;
+  setAccountBalance: (balance: number | 0) => void;
+  gameData: GameInfoResponse;
 }
 
 const GlobalContext = createContext<GlobalState>({
@@ -31,20 +24,29 @@ const GlobalContext = createContext<GlobalState>({
     value: null,
     formatted: null,
   },
-  totalStaked: 0,
-  allocationLevel: 0,
   loading: false,
-  isEnabledVotingFeature: false,
-  isInitTimestamp: false,
-  setTotalStaked: () => {},
-  setAllocationLevel: () => {},
+  // tslint:disable-next-line:no-empty
   setLoading: () => {},
+  // tslint:disable-next-line:no-empty
   setAccountBalance: () => {},
-  setIsEnabledVotingFeature: () => {},
+  gameData: {
+    name: '',
+    videoIntroURL: '',
+    logoURL: '',
+    backgroundURL: '',
+    description: '',
+    gameURL: '',
+    tokenCode: '',
+    tokenName: '',
+    walletAddress: '',
+    programId: '',
+    gameId: '',
+    tokenAddress: '',
+    tokenDecimals: 6,
+  },
 });
 
 export const GlobalProvider: React.FC = ({ children }) => {
-  const { connection } = useConnection();
   const [loading, setLoading] = useState(false);
   const [now, setNow] = useState(() => {
     return new Decimal(moment().unix()).times(1000).toNumber();
@@ -56,27 +58,35 @@ export const GlobalProvider: React.FC = ({ children }) => {
     value: null,
     formatted: null,
   });
-  const [totalStaked, setTotalStaked] = useState(0);
-  const [allocationLevel, setAllocationLevel] = useState(0);
-  const [isEnabledVotingFeature, setIsEnabledVotingFeature] = useState(false);
-  const [isInitTimestamp, setIsInitTimestamp] = useState(false);
+  const [gameData, setGameData] = useState<GameInfoResponse>({
+    name: '',
+    videoIntroURL: '',
+    logoURL: '',
+    backgroundURL: '',
+    description: '',
+    gameURL: '',
+    tokenCode: '',
+    tokenName: '',
+    walletAddress: '',
+    programId: '',
+    gameId: '',
+    tokenAddress: '',
+    tokenDecimals: 6,
+  });
 
   useEffect(() => {
-    const fetchNow = () => {
-      connection
-        .getAccountInfo(clockSysvarAccount)
-        .then((result) => {
-          const decoded = ClockLayout.decode(result?.data);
-          const unixTimestamp = u64.fromBuffer(decoded.unix_timestamp).toString();
-
-          setNow(new Decimal(unixTimestamp).toNumber());
-        })
-        .finally(() => {
-          setIsInitTimestamp(true);
-        });
+    const fetchGameData = async () => {
+      try {
+        setLoading(true);
+        const gameResponse = await getGameInfo();
+        setGameData(gameResponse);
+      } catch (error) {
+        setLoading(false);
+      }
+      setLoading(false);
     };
 
-    fetchNow();
+    fetchGameData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -90,12 +100,12 @@ export const GlobalProvider: React.FC = ({ children }) => {
     };
   }, []);
 
-  const setAccountBalance = (accBalance: number | null) => {
-    const balanceResult = transformLamportsToSOL(accBalance || 0);
+  const setAccountBalance = (accBalance: number | 0) => {
+    // const balanceResult = transformLamportsToSOL(accBalance || 0);
 
     setBalance({
-      value: balanceResult,
-      formatted: formatNumber.format(balanceResult) as string,
+      value: accBalance,
+      formatted: formatNumber.format(accBalance) as string,
     });
   };
 
@@ -104,16 +114,10 @@ export const GlobalProvider: React.FC = ({ children }) => {
       value={{
         now,
         balance,
-        totalStaked,
-        allocationLevel,
         loading,
-        isEnabledVotingFeature,
-        isInitTimestamp,
-        setTotalStaked,
-        setAllocationLevel,
         setLoading,
         setAccountBalance,
-        setIsEnabledVotingFeature,
+        gameData,
       }}
     >
       {children}

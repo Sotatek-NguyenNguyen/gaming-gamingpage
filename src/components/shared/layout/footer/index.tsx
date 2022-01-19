@@ -1,35 +1,27 @@
 import { FC } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useGlobal } from '../../../../hooks';
 
 const Footer: FC = () => {
   const router = useRouter();
-
-  const handleClickNav = (navLink?: string, newTab: boolean = false) => {
-    if (navLink) {
-      if (!newTab) {
-        router.push(navLink);
-      } else {
-        window.open(navLink, '_blank');
-      }
-    }
-  };
+  const { gameData } = useGlobal();
 
   return (
     <footer className="bg-primary-200">
       <div className="flex flex-col">
-        <div className="layout-container flex justify-center items-center py-14">
-          <Image
-            width={334}
-            height={133}
-            src="/images/gamify_logo_max.svg"
-            alt="gamify gaming logo"
-            className="cursor-pointer"
-            onClick={() => router.push('/')}
-          />
+        <div className="layout-container flex justify-center items-center pt-10 pb-7">
+          {gameData?.logoURL && (
+            <img
+              src={gameData.logoURL}
+              alt={gameData.name}
+              className="cursor-pointer max-w-full"
+              onClick={() => router.push('/')}
+            />
+          )}
         </div>
-        <div className="layout-container py-2">
-          <span className="layout-container text-xl text-left text-white">Powered by Gamify</span>
+        <div className="layout-container pb-12 text-center">
+          <span className="text-lg text-primary-800">Powered by Gamify</span>
         </div>
       </div>
     </footer>

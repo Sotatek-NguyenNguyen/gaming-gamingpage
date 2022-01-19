@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  gamify:
+    build: .
+    ports: 
+      - '4001:4001'
+    networks: 
+      - gamify 
+
+networks:
+  gamify:

@@ -8,6 +8,6 @@ COPY . .
 RUN rm -rf /app/.env
 RUN npm run build
 
-EXPOSE 3006
+EXPOSE 4001
 
 CMD ["npm", "start"]

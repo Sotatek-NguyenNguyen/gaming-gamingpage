@@ -4,7 +4,7 @@ import { ISolletChain } from '../utils/interface';
 import { envConfig, solletConfig } from '../configs';
 import { ESolletEnv } from '../utils/enum';
 
-const { SOLLET_ENV } = envConfig;
+const { SOLLET_ENV2 } = envConfig;
 const { SOLLET_CHAINS } = solletConfig;
 
 export const isEmpty = (str?: string | null): boolean => {
@@ -100,10 +100,10 @@ export const extractPoolData = (
 
 export const getCurrentChain = (): ISolletChain => {
   let matched: ISolletChain | null;
-  const defaultChain = SOLLET_CHAINS.find((slc) => slc.name === ESolletEnv.TESTNET)!;
+  const defaultChain = SOLLET_CHAINS.find((slc) => slc.name === ESolletEnv.DEVNET)!;
 
-  if (SOLLET_ENV && (SOLLET_ENV as ESolletEnv)) {
-    matched = SOLLET_CHAINS.find((slc) => slc.name === SOLLET_ENV) || null;
+  if (SOLLET_ENV2 && (SOLLET_ENV2 as ESolletEnv)) {
+    matched = SOLLET_CHAINS.find((slc) => slc.name === SOLLET_ENV2) || null;
   } else {
     matched = null;
   }

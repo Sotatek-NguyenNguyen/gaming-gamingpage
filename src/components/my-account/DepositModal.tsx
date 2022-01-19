@@ -1,50 +1,84 @@
-import { FC, useMemo } from 'react';
+import { FC, useRef } from 'react';
 import BaseModal from '../shared/BaseModal';
 
 interface Props {
   onClose?: () => void | Promise<void>;
-  onConfirm?: () => void | Promise<void>;
+  onConfirm?: (val: number) => void | Promise<void>;
   confirmText?: string;
   playerKey?: string;
+  gameWallet?: string;
+  tokenCode?: string;
+  chargeLoading: boolean;
 }
 
-const DepositModal: FC<Props> = ({ onClose, onConfirm, confirmText, playerKey }) => {
+const DepositModal: FC<Props> = ({
+  onClose,
+  onConfirm,
+  confirmText,
+  playerKey,
+  chargeLoading,
+  gameWallet,
+  tokenCode,
+}) => {
+  const inputElement = useRef() as React.MutableRefObject<HTMLInputElement>;
+
+  const handleSubmitDeposit = () => {
+    if (onConfirm && inputElement.current.value) {
+      onConfirm(Number(inputElement.current.value));
+    }
+  };
+
+  const onValidateInput = (evt: React.FormEvent<HTMLInputElement>) => {
+    const element = evt.target as HTMLInputElement;
+    if (element?.value) {
+      const t = element.value;
+      element.value =
+        t.indexOf('.') >= 0 ? t.substr(0, t.indexOf('.')) + t.substr(t.indexOf('.'), 7) : t;
+    }
+  };
+
   return (
     <BaseModal
       dense
-      modalName="DEPOSIT"
+      modalName="Deposit"
       loading={false}
       confirmText={confirmText}
+      chargeLoading={chargeLoading}
       customBody={
         <div>
-          <div className="text-base mt-2 ml-3">Game Wallet Address</div>
+          <div className="text-primary-800">Game Wallet Address</div>
           <input
             type="text"
-            className="bg-white mt-1 bg-opacity-50 rounded-full outline-none text-primary-100 py-3 px-7 w-full"
+            className="bg-primary-800 mt-2 bg-opacity-50 rounded-full outline-none text-white truncate py-3 px-7 w-full"
             readOnly
-            value="4zj7KF13agrr3VYEt3RxxhDtzHGQmL7KdhzGZ9nzp1xD"
+            value={gameWallet}
           />
-          <div className="text-base mt-4 ml-3">Player Wallet Address</div>
+          <div className="mt-5 text-primary-800">Player Wallet Address</div>
           <input
             type="text"
-            className="bg-white mt-1 bg-opacity-50 rounded-full outline-none text-primary-100 py-3 px-7 w-full"
+            className="bg-primary-800 mt-2 bg-opacity-50 rounded-full outline-none text-white truncate py-3 px-7 w-full"
             readOnly
             value={playerKey}
           />
-          <div className="text-base mt-4 ml-3">Deposit Amount: *</div>
-          <div className="relative mt-1 text-primary-100">
+          <div className="mt-5 text-primary-800">Deposit Amount: *</div>
+          <div className="relative mt-2 text-primary-100">
             <input
               type="number"
-              className="bg-white rounded-full outline-none py-3 pl-7 pr-32 w-full"
+              className="bg-white rounded-full outline-none py-3 pl-7 pr-24 w-full"
+              ref={inputElement}
+              onKeyDown={(evt) => ['e', 'E', '+', '-'].includes(evt.key) && evt.preventDefault()}
+              onInput={(e: React.FormEvent<HTMLInputElement>) => onValidateInput(e)}
             />
-            <span className="uppercase absolute top-1/2 right-10 transform -translate-y-1/2">
-              Token
-            </span>
+            {tokenCode && (
+              <span className="flex justify-center items-center rounded-full px-4 font-semibold text-base absolute h-10 top-1/2 right-1 transform bg-primary-300 text-white -translate-y-1/2">
+                {tokenCode}
+              </span>
+            )}
           </div>
         </div>
       }
       onClose={onClose}
-      handleConfirm={onConfirm}
+      handleConfirm={handleSubmitDeposit}
     />
   );
 };
