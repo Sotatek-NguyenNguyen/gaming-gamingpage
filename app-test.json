@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "gamify-gc-gaming-dev-3006",
+      "script": "npm",
+      "args": "run start-dev-3006"
+    }
+  ]
+}

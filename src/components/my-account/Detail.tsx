@@ -7,6 +7,7 @@ import {
   Commitment,
   ConfirmOptions,
   Transaction,
+  Keypair,
 } from '@solana/web3.js';
 import { Program, Provider, BN, web3 } from '@project-serum/anchor';
 import { confirmAlert } from 'react-confirm-alert';
@@ -36,6 +37,12 @@ declare global {
     solana: any;
   }
 }
+
+export const createKeypairBase58 = (secretKeyString: string): Keypair => {
+  const secretBuffer = bs58.decode(secretKeyString);
+  const secretKey = Uint8Array.from(secretBuffer);
+  return Keypair.fromSecretKey(secretKey);
+};
 
 const treasuryPDASeed = Buffer.from('treasury');
 export const expiredTime = 600; // 10 mins
@@ -192,8 +199,13 @@ const Detail: FC<Props> = ({ user, loading }) => {
               const serverTx = await userWithdrawAction({ amount: numWithdraw });
 
               const userTx = Transaction.from(Buffer.from(serverTx.serializedTx, 'base64'));
+              console.error('userTx ', userTx);
+              // let owner = createKeypairBase58("3AKfhpgvdZTxgmPoToppPpEtSZrYHa8N7mnvmdEpZMj6hKeXZtfjjLiz1VXChgP25yC8jpd3PKgEYtyWcEjtcdjB");
+              // console.error("tx ", await userTx.partialSign(owner));
               const signed = await signTransaction(userTx);
-              const signature = await connection.sendRawTransaction(signed.serialize());
+              console.error('signed ', signed);
+              const signature = await connection.sendRawTransaction(signed.serialize()); // ---loi o dong nay
+              console.error('signature ', signature);
               await connection.confirmTransaction(signature);
               alertSuccess('Withdraw successfully');
               // console.log({ signature });
