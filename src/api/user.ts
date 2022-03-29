@@ -4,6 +4,7 @@ import {
   UserWithdrawResponse,
   UserTransactionsResponse,
   UserMintNFTArweaveUploadResponse,
+  OTPResponse,
 } from '../utils/interface';
 
 export const getUserDetail = (): Promise<UserDetailResponse> => {
@@ -44,4 +45,8 @@ export const userMintNFTAction = (
   params: Record<string, unknown>,
 ): Promise<UserWithdrawResponse> => {
   return axios.post('my/nft/mint', params);
+};
+
+export const getOTPAction = (params: Record<string, unknown>): Promise<OTPResponse> => {
+  return axios.post('my/requestOTP', params);
 };

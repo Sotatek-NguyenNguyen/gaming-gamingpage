@@ -18,13 +18,14 @@ import NavbarMenus from './NavbarMenus';
 import TransactionsTable from './TransactionsTable';
 import DepositModal from './DepositModal';
 import WithdrawModal from './WithdrawModal';
+import ReqOTPModal from './ReqOTPModal';
 import MintNFTModal from './MintNFTModal';
 import VerifyInGameAccountModal from './VerifyInGameAccountModal';
 import { UserDetailResponse } from '../../utils/interface';
 import { useGlobal, useAlert, useAuth } from '../../hooks';
 import { IDL } from '../../utils/treasury';
 import { roundNumberByDecimal } from '../../utils/helper';
-import { userWithdrawAction } from '../../api/user';
+import { getOTPAction, userWithdrawAction } from '../../api/user';
 import Decimal from 'decimal.js';
 
 interface Props {
@@ -235,6 +236,37 @@ const Detail: FC<Props> = ({ user, loading }) => {
     });
   };
 
+  const handleReqOTP = () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        const handleReqOTP = async (email: string) => {
+          try {
+            const otp = await getOTPAction({ email: email });
+          } catch (error) {
+            console.error(error);
+            setChargeLoading(false);
+            onClose();
+            alertError('Transaction Canceled');
+          }
+          setChargeLoading(false);
+          onClose();
+        };
+
+        return (
+          <ReqOTPModal
+            onClose={onClose}
+            onConfirm={handleReqOTP}
+            confirmText="Request OTP"
+            playerKey={base58}
+            chargeLoading={chargeLoading}
+            gameWallet={gameData.walletAddress}
+            tokenCode={gameData.tokenCode}
+          />
+        );
+      },
+    });
+  };
+
   const handleMintNFT = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -357,6 +389,20 @@ const Detail: FC<Props> = ({ user, loading }) => {
               disabled={!isAccountVerified ? true : false}
             >
               Request Mint NFT
+            </button>
+
+            <button
+              className={clsx(
+                'w-60 p-2 h-12 mt-4 font-semibold overflow-hidden text-lg text-white rounded-full transition-all',
+                {
+                  'bg-primary-300 hover:bg-primary-100': isAccountVerified,
+                  'bg-primary-800': !isAccountVerified,
+                },
+              )}
+              onClick={isAccountVerified ? handleReqOTP : () => {}}
+              disabled={!isAccountVerified ? true : false}
+            >
+              Setting account game
             </button>
           </div>
         </div>

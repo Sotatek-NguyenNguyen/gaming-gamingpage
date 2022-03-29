@@ -99,3 +99,7 @@ interface ArweaveMetaDataAttribute {
   trait_type: string;
   value: string;
 }
+
+export interface OTPResponse {
+  OTP: string;
+}
